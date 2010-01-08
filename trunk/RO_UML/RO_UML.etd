@@ -209,7 +209,8 @@
 <UML:Parameter xmi.id="DCE.6C756790-AA8D-4B28-5CC9-B00B868F1EC4" type="DCE.92BA2CDF-219C-AF78-2699-4FD0266F45A5" direction="result" owner="DCE.C4824971-9463-5CAA-4B82-A52C0FE90541"><UML:TypedElement.multiplicity>
 <UML:Multiplicity xmi.id="DCE.0C1B829F-7C75-99E0-F766-0FE7601B6C6F"/></UML:TypedElement.multiplicity></UML:Parameter></UML:Element.ownedElement><UML:Element.presentation>
 
-</UML:Element.presentation></UML:Operation></UML:Element.ownedElement></UML:Class>
+</UML:Element.presentation></UML:Operation>
+<UML:SourceFileArtifact xmi.id="DCE.5DD0DA04-2F3D-19CD-2DA7-FBF74B3E8CB9" name="Unnamed" owner="DCE.FC1D9754-FBD8-1177-68FE-47B4FFDACDF9" sourcefile="..\NetOptimiz\src\ModeleRecuit.java"/></UML:Element.ownedElement></UML:Class>
 <UML:DataType xmi.id="DCE.798EF4F8-85C2-AD45-A8EE-06A3283AF6C5" name="int" owner="DCE.1C0677A0-8843-7861-2507-AA09298276D2"/>
 <UML:DataType xmi.id="DCE.9AB3AED1-E3B6-3EA2-DA62-3091F77B0C05" name="float" owner="DCE.1C0677A0-8843-7861-2507-AA09298276D2"/>
 <UML:DataType xmi.id="DCE.92BA2CDF-219C-AF78-2699-4FD0266F45A5" name="void" owner="DCE.1C0677A0-8843-7861-2507-AA09298276D2"/>
@@ -327,7 +328,8 @@
 <UML:Parameter xmi.id="DCE.C2BAEFD7-B117-5AD1-246D-80525BAB932D" type="DCE.13C05E6A-20C3-7DCE-D86E-EF02BE3219AE" name="val" owner="DCE.36D02303-A0FA-F8ED-86CF-652B0894427E"><UML:TypedElement.multiplicity>
 <UML:Multiplicity xmi.id="DCE.9506DABE-3431-0597-800D-A6BFB6492512"/></UML:TypedElement.multiplicity></UML:Parameter></UML:Element.ownedElement><UML:Element.presentation>
 
-</UML:Element.presentation></UML:Operation></UML:Element.ownedElement></UML:Class>
+</UML:Element.presentation></UML:Operation>
+<UML:SourceFileArtifact xmi.id="DCE.9D2327E9-2940-DAD1-434C-0E1ADC170B6A" name="Unnamed" owner="DCE.C6885B7D-C45D-4291-C4FB-250F1BDFB60C" sourcefile="..\NetOptimiz\src\Optimisation.java"/></UML:Element.ownedElement></UML:Class>
 
 
 <UML:Class xmi.id="DCE.A895A11D-F200-B75F-4E08-3A6EC08CE966" name="ModeleVNS" owner="DCE.1C0677A0-8843-7861-2507-AA09298276D2" associationEnd="DCE.F25BBF1B-15EA-9075-FE65-AE28C473C7E9 DCE.30BC8CFB-3DF2-1CF4-5DB2-31F740ED7027" isAbstract="true" specialization="DCE.74632B56-36BE-51FC-F126-CDC758E0BA35"><UML:Element.presentation>
@@ -474,7 +476,8 @@
 <UML:Parameter xmi.id="DCE.02AC9616-7384-8FA8-C7ED-D7DD716CEE97" type="DCE.4F756EB4-9BDE-A3EE-D10B-0D4E07BE6F04" direction="result" owner="DCE.BC595E9C-BCA4-11CC-7720-383CC95EC426"><UML:TypedElement.multiplicity>
 <UML:Multiplicity xmi.id="DCE.DE41DD2A-FD83-0A84-E76D-27232B4A48B2"/></UML:TypedElement.multiplicity></UML:Parameter></UML:Element.ownedElement><UML:Element.presentation>
 
-</UML:Element.presentation></UML:Operation></UML:Element.ownedElement></UML:Class>
+</UML:Element.presentation></UML:Operation>
+<UML:SourceFileArtifact xmi.id="DCE.DD625DC3-47AA-F20D-9595-3337F51EFE9C" name="Unnamed" owner="DCE.A895A11D-F200-B75F-4E08-3A6EC08CE966" sourcefile="..\NetOptimiz\src\ModeleVNS.java"/></UML:Element.ownedElement></UML:Class>
 
 
 
@@ -568,7 +571,8 @@
 <UML:Parameter xmi.id="DCE.22EB9C4F-36B7-8249-23BD-6096D2BCD738" type="DCE.92BA2CDF-219C-AF78-2699-4FD0266F45A5" direction="result" owner="DCE.FC7A9099-6512-F62D-29BC-E653C4398657"><UML:TypedElement.multiplicity>
 <UML:Multiplicity xmi.id="DCE.0B03A6D7-737F-79AC-39D9-8B2FE8E147CF"/></UML:TypedElement.multiplicity></UML:Parameter></UML:Element.ownedElement><UML:Element.presentation>
 
-</UML:Element.presentation></UML:Operation></UML:Element.ownedElement></UML:Class>
+</UML:Element.presentation></UML:Operation>
+<UML:SourceFileArtifact xmi.id="DCE.B3D2ACB0-1327-57E6-97FB-C2C976F854EA" name="Unnamed" owner="DCE.D4BB861E-2496-FC75-62C6-03BD84658A08" sourcefile="..\NetOptimiz\src\Application.java"/></UML:Element.ownedElement></UML:Class>
 <UML:Class xmi.id="DCE.D0FF6357-3185-9AFB-32D8-45C1EB78AF89" name="Noeud" owner="DCE.1C0677A0-8843-7861-2507-AA09298276D2" associationEnd="DCE.8CF44483-4F03-EA66-8975-86317A75951D DCE.E423364C-BAFE-6E38-A2C9-928F170FF815 DCE.8E31EC7B-F22B-5F33-BC10-80F02C387D52 DCE.B4BB41A3-677B-70A2-D3CA-BF84C0456165 DCE.90279186-F845-DD62-B905-1961CBC06F3F DCE.64F202D4-7669-E426-5B6F-3F05FD7449EF DCE.17C599C6-ACA8-13C2-442A-618B57236EDC DCE.313BC657-3502-C266-BC8A-685E3C4E9173 DCE.81E910D4-76ED-2E04-3A2D-A5557138E278 DCE.4DC1B227-C74A-002C-CC2A-00E0658557A6 DCE.2E53C1C5-A4A5-E771-6BB6-C89920A273AE"><UML:Element.presentation>
 
 
@@ -680,7 +684,8 @@
 
 
 
-</UML:Element.presentation></UML:Operation></UML:Element.ownedElement></UML:Class>
+</UML:Element.presentation></UML:Operation>
+<UML:SourceFileArtifact xmi.id="DCE.C3B94494-8A44-C3E1-517C-1011AAF6BD04" name="Unnamed" owner="DCE.D0FF6357-3185-9AFB-32D8-45C1EB78AF89" sourcefile="..\NetOptimiz\src\Noeud.java"/></UML:Element.ownedElement></UML:Class>
 <UML:Class xmi.id="DCE.B836610B-51DA-9D0F-58E0-A3AF64083A40" name="Arc" owner="DCE.1C0677A0-8843-7861-2507-AA09298276D2" associationEnd="DCE.CD793B76-3EA2-8324-722A-C09086990701 DCE.FDA35888-0D0A-A261-F576-144D1FCF6875 DCE.655AE706-5FFB-6B05-D7E6-2D6CB1D06FFC DCE.22423101-4CA5-82B4-94B6-C26047DB97FC DCE.7DE36000-9803-EC0F-4E7C-B7DF12189AF1 DCE.FEB7305D-C85A-98D5-4B3D-425B0079EE58 DCE.A3773BC8-87EF-DD80-9654-EB6060EBE2C6 DCE.65621EAD-BA2E-3A95-600B-54D8C61579CD DCE.5FE1A255-60DD-6886-29BD-589C48B3558D"><UML:Element.presentation>
 
 
@@ -801,7 +806,8 @@
 <UML:Parameter xmi.id="DCE.A5A0FC22-0632-81AA-65F5-E4B96A2115E9" type="DCE.D0FF6357-3185-9AFB-32D8-45C1EB78AF89" name="val" owner="DCE.3F9419B5-8C76-D17A-5F6A-A8B8C555AAC2"><UML:TypedElement.multiplicity>
 <UML:Multiplicity xmi.id="DCE.398F3A5F-67BB-666E-3E5F-EC90352518BF"/></UML:TypedElement.multiplicity></UML:Parameter></UML:Element.ownedElement><UML:Element.presentation>
 
-</UML:Element.presentation></UML:Operation></UML:Element.ownedElement></UML:Class>
+</UML:Element.presentation></UML:Operation>
+<UML:SourceFileArtifact xmi.id="DCE.7992CD9E-202E-959C-392D-AA89F4F66C1E" name="Unnamed" owner="DCE.B836610B-51DA-9D0F-58E0-A3AF64083A40" sourcefile="..\NetOptimiz\src\Arc.java"/></UML:Element.ownedElement></UML:Class>
 
 
 
@@ -900,7 +906,8 @@
 <UML:Parameter xmi.id="DCE.F36F771F-B188-6AA0-1E30-7CFBBEE35CCD" type="DCE.D0FF6357-3185-9AFB-32D8-45C1EB78AF89" name="val" owner="DCE.215CFAC7-7004-479A-F862-68391A1AEBC1"><UML:TypedElement.multiplicity>
 <UML:Multiplicity xmi.id="DCE.73979538-65BE-12E5-717D-E90EAB71AE51"/></UML:TypedElement.multiplicity></UML:Parameter></UML:Element.ownedElement><UML:Element.presentation>
 
-</UML:Element.presentation></UML:Operation></UML:Element.ownedElement></UML:Class>
+</UML:Element.presentation></UML:Operation>
+<UML:SourceFileArtifact xmi.id="DCE.8164A6AA-0347-4920-7768-50A7AC5FAB30" name="Unnamed" owner="DCE.F305E935-30A3-D688-43F6-8120D158AA03" sourcefile="..\NetOptimiz\src\Demande.java"/></UML:Element.ownedElement></UML:Class>
 
 
 
@@ -917,7 +924,8 @@
 
 
 
-</UML:Element.ownedElement><UML:Enumeration.literal>
+
+<UML:SourceFileArtifact xmi.id="DCE.52ABB00C-BFE6-5FAD-1A03-CA13481BA19F" name="Unnamed" owner="DCE.80B30FB1-8B39-9065-EC88-6572F786FF71" sourcefile="..\NetOptimiz\src\Methode.java"/></UML:Element.ownedElement><UML:Enumeration.literal>
 <UML:EnumerationLiteral xmi.id="DCE.C0337B95-887D-5CB7-CECA-AA920DF09501" enumeration="DCE.80B30FB1-8B39-9065-EC88-6572F786FF71" name="Recuit"><UML:Element.presentation>
 
 
@@ -1009,7 +1017,8 @@
 <UML:Multiplicity xmi.id="DCE.C58B2BAB-23A6-E1D5-9C6B-09B98DE12E03"><UML:Multiplicity.range>
 <UML:MultiplicityRange xmi.id="DCE.52B4A633-183E-24D3-92EA-96C4008D2C6C" lower="*" upper="" collectionType=""/></UML:Multiplicity.range></UML:Multiplicity></UML:TypedElement.multiplicity></UML:Parameter></UML:Element.ownedElement><UML:Element.presentation>
 
-</UML:Element.presentation></UML:Operation></UML:Element.ownedElement></UML:Class>
+</UML:Element.presentation></UML:Operation>
+<UML:SourceFileArtifact xmi.id="DCE.356EE367-8B4B-428A-5D00-6AAE184BF9D3" name="Unnamed" owner="DCE.13C05E6A-20C3-7DCE-D86E-EF02BE3219AE" sourcefile="..\NetOptimiz\src\ProgrammeLineaire.java"/></UML:Element.ownedElement></UML:Class>
 <UML:Class xmi.id="DCE.9B36F60C-C13A-02D8-2C75-7D9775BBBB25" name="Variable" owner="DCE.1C0677A0-8843-7861-2507-AA09298276D2" associationEnd="DCE.7354B506-91B8-08DB-ABD4-97C5D42A4507 DCE.14B2BAD5-6941-FC10-B334-B76FFB0E77E2 DCE.0EDFA9C6-07DC-E178-A260-7E633C4589A2"><UML:Element.presentation>
 
 
@@ -1143,7 +1152,8 @@
 
 
 
-</UML:Element.presentation></UML:Operation></UML:Element.ownedElement></UML:Class>
+</UML:Element.presentation></UML:Operation>
+<UML:SourceFileArtifact xmi.id="DCE.3B41F869-8E08-475C-B954-D733B6FE841B" name="Unnamed" owner="DCE.9B36F60C-C13A-02D8-2C75-7D9775BBBB25" sourcefile="..\NetOptimiz\src\Variable.java"/></UML:Element.ownedElement></UML:Class>
 <UML:Class xmi.id="DCE.F3527BAB-104E-7DAF-2BC3-2BB51427C6D7" name="Contrainte" owner="DCE.1C0677A0-8843-7861-2507-AA09298276D2" associationEnd="DCE.1452F556-67DE-334C-E496-2419C7052059 DCE.5A38AB15-3E84-46F4-19D1-E6DD707B2132"><UML:Element.presentation>
 
 
@@ -1206,7 +1216,8 @@
 <UML:Parameter xmi.id="DCE.17F416F3-AB97-E23C-85CA-98DBFFE8830F" type="DCE.4F756EB4-9BDE-A3EE-D10B-0D4E07BE6F04" name="val" owner="DCE.A1DC1836-F06D-3F5B-83D6-8BF091C15F16"><UML:TypedElement.multiplicity>
 <UML:Multiplicity xmi.id="DCE.69A82A89-49C2-7EE2-A971-F192998C87E3"/></UML:TypedElement.multiplicity></UML:Parameter></UML:Element.ownedElement><UML:Element.presentation>
 
-</UML:Element.presentation></UML:Operation></UML:Element.ownedElement></UML:Class>
+</UML:Element.presentation></UML:Operation>
+<UML:SourceFileArtifact xmi.id="DCE.5C87F92F-1745-4768-01F1-E17B1770B72C" name="Unnamed" owner="DCE.F3527BAB-104E-7DAF-2BC3-2BB51427C6D7" sourcefile="..\NetOptimiz\src\Contrainte.java"/></UML:Element.ownedElement></UML:Class>
 <UML:Class xmi.id="DCE.FC4AC887-49A5-7A4E-6295-81F40A2F8D61" name="Objectif" owner="DCE.1C0677A0-8843-7861-2507-AA09298276D2" associationEnd="DCE.98A4B745-D6F5-74C5-A4B8-AB23842AA426 DCE.CFBBA15A-D2FB-ED88-99AB-A47CED6CD6E3"><UML:Element.presentation>
 
 
@@ -1256,7 +1267,8 @@
 <UML:Parameter xmi.id="DCE.E2D59797-E5D7-9283-464D-C29AC2FFD41F" type="DCE.C9EC0AEC-B8F1-93BB-405B-A4C1CB308E79" name="val" owner="DCE.B25E1FAF-6D7F-C4E2-9439-32B16294EF6C"><UML:TypedElement.multiplicity>
 <UML:Multiplicity xmi.id="DCE.242C7113-4F45-0418-3C2E-7FA03D74D4ED"/></UML:TypedElement.multiplicity></UML:Parameter></UML:Element.ownedElement><UML:Element.presentation>
 
-</UML:Element.presentation></UML:Operation></UML:Element.ownedElement></UML:Class>
+</UML:Element.presentation></UML:Operation>
+<UML:SourceFileArtifact xmi.id="DCE.8E961BBB-1B4C-C623-267E-0ED4491B102F" name="Unnamed" owner="DCE.FC4AC887-49A5-7A4E-6295-81F40A2F8D61" sourcefile="..\NetOptimiz\src\Objectif.java"/></UML:Element.ownedElement></UML:Class>
 
 <UML:Aggregation xmi.id="DCE.6C0541EA-CD40-A67B-A6B1-9D5169A0BBCE" owner="DCE.1C0677A0-8843-7861-2507-AA09298276D2" aggregateEnd="DCE.F83FC613-DC5F-58F6-47C9-7BD0FBA8DFD6" partEnd="DCE.7354B506-91B8-08DB-ABD4-97C5D42A4507"><UML:Association.end>
 <UML:AssociationEnd xmi.id="DCE.F83FC613-DC5F-58F6-47C9-7BD0FBA8DFD6" visibility="private" type="DCE.13C05E6A-20C3-7DCE-D86E-EF02BE3219AE" association="DCE.6C0541EA-CD40-A67B-A6B1-9D5169A0BBCE"><UML:TypedElement.multiplicity>
@@ -1300,7 +1312,8 @@
 <UML:Parameter xmi.id="DCE.495172F5-3471-67A3-82FE-FC0D11CD2733" type="DCE.92BA2CDF-219C-AF78-2699-4FD0266F45A5" direction="result" owner="DCE.95B8ABE4-80EB-D665-876A-B153DE528B88"><UML:TypedElement.multiplicity>
 <UML:Multiplicity xmi.id="DCE.0344AA0D-2A3E-CD9B-33C0-0DCF3173A207"/></UML:TypedElement.multiplicity></UML:Parameter></UML:Element.ownedElement><UML:Element.presentation>
 
-</UML:Element.presentation></UML:Operation></UML:Element.ownedElement><UML:Classifier.generalization>
+</UML:Element.presentation></UML:Operation>
+<UML:SourceFileArtifact xmi.id="DCE.7B2C56CD-CF60-71E8-4CFF-38BB5286324D" name="Unnamed" owner="DCE.8C047F73-ABA7-4A73-0AD1-58ACADB0E129" sourcefile="..\NetOptimiz\src\TelecomRecuit.java"/></UML:Element.ownedElement><UML:Classifier.generalization>
 <UML:Generalization xmi.id="DCE.307DAEFF-83C5-F420-C8AE-B149DC95A582" specific="DCE.8C047F73-ABA7-4A73-0AD1-58ACADB0E129" general="DCE.FC1D9754-FBD8-1177-68FE-47B4FFDACDF9"><UML:Element.presentation>
 
 </UML:Element.presentation></UML:Generalization></UML:Classifier.generalization></UML:Class>
@@ -1334,7 +1347,8 @@
 <UML:Parameter xmi.id="DCE.C5A60F58-5466-433F-FDCF-76206917082D" type="DCE.4F756EB4-9BDE-A3EE-D10B-0D4E07BE6F04" direction="result" owner="DCE.E2253EC7-2938-3610-EDD7-1DA4890559CB"><UML:TypedElement.multiplicity>
 <UML:Multiplicity xmi.id="DCE.AC41A858-BE06-41C5-AE60-6A88A186922C"/></UML:TypedElement.multiplicity></UML:Parameter></UML:Element.ownedElement><UML:Element.presentation>
 
-</UML:Element.presentation></UML:Operation></UML:Element.ownedElement><UML:Classifier.generalization>
+</UML:Element.presentation></UML:Operation>
+<UML:SourceFileArtifact xmi.id="DCE.39D1BEC9-0E38-3738-0EB6-B15715FCA710" name="Unnamed" owner="DCE.1E8E3307-9A13-635E-592C-D30670867340" sourcefile="..\NetOptimiz\src\TelecomVNS.java"/></UML:Element.ownedElement><UML:Classifier.generalization>
 <UML:Generalization xmi.id="DCE.74632B56-36BE-51FC-F126-CDC758E0BA35" specific="DCE.1E8E3307-9A13-635E-592C-D30670867340" general="DCE.A895A11D-F200-B75F-4E08-3A6EC08CE966"><UML:Element.presentation>
 
 </UML:Element.presentation></UML:Generalization></UML:Classifier.generalization></UML:Class>
@@ -1447,7 +1461,8 @@
 <UML:Multiplicity xmi.id="DCE.1D07434F-3C10-2EBA-7A85-51EBC640F2A8"><UML:Multiplicity.range>
 <UML:MultiplicityRange xmi.id="DCE.18802F48-32E4-4972-AEC7-0EDD99D717E0" lower="*" upper="" collectionType=""/></UML:Multiplicity.range></UML:Multiplicity></UML:TypedElement.multiplicity></UML:Parameter></UML:Element.ownedElement><UML:Element.presentation>
 
-</UML:Element.presentation></UML:Operation></UML:Element.ownedElement></UML:Class>
+</UML:Element.presentation></UML:Operation>
+<UML:SourceFileArtifact xmi.id="DCE.40555BFD-BE0C-6FD0-341E-E69167B94F1E" name="Unnamed" owner="DCE.5B59DB0B-078B-30C1-845E-3AA9BD72FFD1" sourcefile="..\NetOptimiz\src\Graphe.java"/></UML:Element.ownedElement></UML:Class>
 
 <UML:Aggregation xmi.id="DCE.968B9A50-6097-8F47-7FF2-ED7734A14790" owner="DCE.1C0677A0-8843-7861-2507-AA09298276D2" aggregateEnd="DCE.2C44B1E6-3A37-BDBE-05E9-0A4E85152516" partEnd="DCE.2E53C1C5-A4A5-E771-6BB6-C89920A273AE"><UML:Association.end>
 <UML:AssociationEnd xmi.id="DCE.2C44B1E6-3A37-BDBE-05E9-0A4E85152516" visibility="private" type="DCE.5B59DB0B-078B-30C1-845E-3AA9BD72FFD1" association="DCE.968B9A50-6097-8F47-7FF2-ED7734A14790"><UML:TypedElement.multiplicity>
