@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Graphe {
 
-    private Noeud noeuds;
+    private ArrayList<Noeud> noeuds;
 
     private ArrayList<Arc> arcs;
 
@@ -29,11 +29,11 @@ public class Graphe {
         this.demandes = val;
     }
 
-    public Noeud getNoeuds () {
+    public ArrayList<Noeud> getnoeuds () {
         return noeuds;
     }
 
-    public void setNoeuds (Noeud val) {
+    public void setnoeuds (ArrayList<Noeud> val) {
         this.noeuds = val;
     }
 
