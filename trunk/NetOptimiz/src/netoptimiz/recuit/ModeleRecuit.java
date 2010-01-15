@@ -1,16 +1,16 @@
 package netoptimiz.recuit;
 
+import netoptimiz.graphe.Graphe;
+
 public abstract class ModeleRecuit {
 
     private double temperature;
-
     private int decroissanceTemp;
-
     private int iterationsInternes;
-
     private int nombrePalliers;
 
     public ModeleRecuit () {
+
     }
 
     public int getDecroissanceTemp () {
@@ -49,11 +49,11 @@ public abstract class ModeleRecuit {
         this.nombrePalliers = val;
     }
 
-    public abstract void faireMvt ();
+    public abstract void faireMvt (Graphe g);
 
-    public abstract void accepterMVT ();
+    public abstract boolean accepterMVT (Graphe g);
 
-    public abstract double calculerCout ();
+    public abstract double calculerCout (Graphe g);
 
     public abstract double deltaCout ();
 
