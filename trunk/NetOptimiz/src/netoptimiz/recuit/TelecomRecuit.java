@@ -14,13 +14,11 @@ public class TelecomRecuit extends ModeleRecuit {
     private int nbiteration=0;
     protected Graphe monGraphe;
 
-    // A virer quand la classe application sera modifiée
-    Application monApplication = new Application();
 
     public TelecomRecuit () {
         // On déroule l'algo tant que la température est positive
         while (this.getTemperature()>0) {
-            monGraphe=monApplication.getgraphe();
+            monGraphe=Application.getSingleton().getgraphe();
             // Calcul du cout initial
             coutinitial=calculerCout(monGraphe);
             //Pour le mouvement
