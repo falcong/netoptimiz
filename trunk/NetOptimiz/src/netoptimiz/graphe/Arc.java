@@ -1,6 +1,10 @@
 package netoptimiz.graphe;
 
+import java.util.ArrayList;
+
 public class Arc {
+
+    private static ArrayList<Arc> arcs = new ArrayList<Arc>();
 
     private double cout;
 
@@ -10,7 +14,22 @@ public class Arc {
 
     private Noeud noeudExtremite;
 
-    public Arc () {
+    public Arc (Noeud Orig,Noeud Extr,double c,double mu) {
+        noeudOrigine = Orig;
+        noeudExtremite = Extr;
+        cout = c;
+        capacite = mu;
+        arcs.add(this);
+    }
+
+    public static void displayArcs() {
+        for (Arc a : arcs) {
+            System.out.println("Arc : " + a.getNoeudOrigine().getNom() + " -> " + a.getNoeudExtremite().getNom());
+        }
+    }
+
+    public static ArrayList<Arc> getarcs () {
+        return arcs;
     }
 
     public double getCapacite () {

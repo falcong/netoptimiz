@@ -1,6 +1,10 @@
 package netoptimiz.graphe;
 
+import java.util.ArrayList;
+
 public class Noeud {
+
+    private static ArrayList<Noeud> noeuds = new ArrayList<Noeud>();
 
     private double abs;
 
@@ -8,9 +12,32 @@ public class Noeud {
 
     private String nom;
 
-    public Noeud () {
+    public Noeud (String Name,double x,double y) {
+        nom = Name;
+        abs = x;
+        ord = y;
+        noeuds.add(this);
     }
 
+    public static Noeud getNoeud(String searchName) {
+        for (Noeud node : noeuds) {
+            if (node.getNom().equals(searchName)) {
+                return node;
+            }
+        }
+        return null;
+    }
+
+    public static void displayNoeuds() {
+        for (Noeud node : noeuds) {
+            System.out.println("Noeud : " + node.getNom());
+        }
+    }
+
+    public static ArrayList<Noeud> getnoeuds () {
+        return noeuds;
+    }
+    
     public double getAbs () {
         return abs;
     }

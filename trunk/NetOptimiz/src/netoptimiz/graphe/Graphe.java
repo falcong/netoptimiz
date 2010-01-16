@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 public class Graphe {
 
+    private static final Graphe instanceGraphe = new Graphe();
+
     private ArrayList<Noeud> noeuds;
 
     private ArrayList<Arc> arcs;
@@ -11,31 +13,45 @@ public class Graphe {
     private ArrayList<Demande> demandes;
 
     public Graphe () {
+        noeuds = new ArrayList<Noeud>();
+        arcs = new ArrayList<Arc>();
+        demandes = new ArrayList<Demande>();
     }
 
-    public ArrayList<Arc> getarcs () {
-        return arcs;
-    }
-
-    public void setarcs (ArrayList<Arc> val) {
-        this.arcs = val;
-    }
-
-    public ArrayList<Demande> getdemandes () {
-        return demandes;
-    }
-
-    public void setdemandes (ArrayList<Demande> val) {
-        this.demandes = val;
+    public static Graphe getSingleton() {
+        return instanceGraphe;
     }
 
     public ArrayList<Noeud> getnoeuds () {
         return noeuds;
     }
 
-    public void setnoeuds (ArrayList<Noeud> val) {
-        this.noeuds = val;
+    public void addNoeud (Noeud n) {
+        this.noeuds.add(n);
     }
 
+    public void removeNoeud (Noeud n) {
+        this.noeuds.remove(n);
+    }
+
+    public ArrayList<Arc> getarcs () {
+        return arcs;
+    }
+
+    public void addArc (Arc a) {
+        this.arcs.add(a);
+    }
+
+    public void removeArc (Arc a) {
+        this.arcs.remove(a);
+    }
+
+    public ArrayList<Demande> getdemandes () {
+        return demandes;
+    }
+
+    public String toString() {
+        return ("Graphe : " + this.noeuds.size() + " noeuds, " + this.arcs.size() + " arcs, " + this.demandes.size() + " demandes");
+    }
 }
 
