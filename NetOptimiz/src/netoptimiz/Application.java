@@ -4,11 +4,19 @@ import netoptimiz.graphe.Graphe;
 
 public class Application {
 
+    private static final Application instanceApplication = new Application();
+
     private Optimisation optimisation;
 
     private Graphe graphe;
 
     public Application () {
+        optimisation = null;
+        graphe = Graphe.getSingleton();
+    }
+
+    public static Application getSingleton() {
+        return instanceApplication;
     }
 
     public Graphe getgraphe () {
