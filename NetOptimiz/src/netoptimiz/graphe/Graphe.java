@@ -6,6 +6,10 @@ public class Graphe {
 
     private static final Graphe instanceGraphe = new Graphe();
 
+    public static Graphe getSingleton() {
+        return instanceGraphe;
+    }
+
     private ArrayList<Noeud> noeuds;
 
     private ArrayList<Arc> arcs;
@@ -18,9 +22,6 @@ public class Graphe {
         demandes = new ArrayList<Demande>();
     }
 
-    public static Graphe getSingleton() {
-        return instanceGraphe;
-    }
 
     public ArrayList<Noeud> getnoeuds () {
         return noeuds;
