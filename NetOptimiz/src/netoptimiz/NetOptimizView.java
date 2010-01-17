@@ -4,6 +4,8 @@
 
 package netoptimiz;
 
+import netoptimiz.graphe.*;
+
 import org.jdesktop.application.Action;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.application.SingleFrameApplication;
@@ -11,10 +13,16 @@ import org.jdesktop.application.FrameView;
 import org.jdesktop.application.TaskMonitor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import javax.swing.Timer;
 import javax.swing.Icon;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * The application's main frame.
@@ -101,9 +109,7 @@ public class NetOptimizView extends FrameView {
     private void initComponents() {
 
         mainPanel = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
@@ -158,22 +164,16 @@ public class NetOptimizView extends FrameView {
         mainPanel.setVerifyInputWhenFocusTarget(false);
 
         javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(netoptimiz.NetOptimizApp.class).getContext().getActionMap(NetOptimizView.class, this);
-        jButton1.setAction(actionMap.get("LoadNoeudsFile")); // NOI18N
+        jButton2.setAction(actionMap.get("LoadData")); // NOI18N
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(netoptimiz.NetOptimizApp.class).getContext().getResourceMap(NetOptimizView.class);
-        jButton1.setText(resourceMap.getString("jButton1.text")); // NOI18N
-        jButton1.setName("jButton1"); // NOI18N
-
-        jButton2.setAction(actionMap.get("LoadArcsFile")); // NOI18N
         jButton2.setText(resourceMap.getString("jButton2.text")); // NOI18N
         jButton2.setName("jButton2"); // NOI18N
-
-        jButton3.setAction(actionMap.get("LoadDemandesFile")); // NOI18N
-        jButton3.setText(resourceMap.getString("jButton3.text")); // NOI18N
-        jButton3.setName("jButton3"); // NOI18N
 
         jLabel1.setText(resourceMap.getString("jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
+        jTextField1.setBackground(resourceMap.getColor("jTextField1.background")); // NOI18N
+        jTextField1.setEditable(false);
         jTextField1.setText(resourceMap.getString("jTextField1.text")); // NOI18N
         jTextField1.setName("jTextField1"); // NOI18N
 
@@ -458,10 +458,7 @@ public class NetOptimizView extends FrameView {
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -482,15 +479,10 @@ public class NetOptimizView extends FrameView {
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(mainPanelLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(jButton1))
+                        .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(mainPanelLayout.createSequentialGroup()
-                                .addComponent(jButton2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton3))
+                            .addComponent(jButton2)
                             .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(mainPanelLayout.createSequentialGroup()
@@ -572,11 +564,86 @@ public class NetOptimizView extends FrameView {
         setStatusBar(statusPanel);
     }// </editor-fold>//GEN-END:initComponents
 
+    @Action
+    public void LoadData() {
+        JFileChooser jfc1 = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(
+        "Fichiers de Noeuds, d'Arcs ou de Demandes", "nod", "arc", "dem");
+        jfc1.setFileFilter(filter);
+        this.getFrame().add(jfc1);
+        jfc1.showOpenDialog(null);
+        if (jfc1.getSelectedFile() != null) {
+            File sourcefile = jfc1.getSelectedFile();
+            this.getFrame().remove(jfc1);
+
+            String sourcename = sourcefile.getName().substring(0, sourcefile.getName().lastIndexOf("."));
+            String sourcepath = sourcefile.getParent() + "\\" + sourcename;
+            this.jTextField1.setText(sourcepath + ".*");
+
+            File nodefile = new File(sourcepath + ".nod");
+            File arcfile = new File(sourcepath + ".arc");
+            File requestfile = new File(sourcepath + ".dem");
+
+            /* verification d'intégrité des fichiers à faire ici */
+
+            // Réinitialisation des données
+            Graphe.getSingleton().reset();
+            Noeud.getnoeuds().clear();
+            Arc.getarcs().clear();
+            Demande.getdemandes().clear();
+
+            BufferedReader br = null;
+            try {
+                String line = null;
+                String[] elem = null;
+                // Chargement des noeuds
+                br = new BufferedReader(new FileReader(nodefile));
+                br.readLine();
+                while ((line = br.readLine()) != null) {
+                    elem = line.split("\t");
+                    new Noeud(elem[0], Double.parseDouble(elem[1]), Double.parseDouble(elem[2]));
+                }
+                br.close();
+                this.jTextField2.setText(String.valueOf(Noeud.getnoeuds().size()));
+                Noeud.displayNoeuds();
+
+                // Chargement des arcs
+                br = new BufferedReader(new FileReader(arcfile));
+                br.readLine();
+                while ((line = br.readLine()) != null) {
+                    elem = line.split("\t");
+                    new Arc(Noeud.getNoeud(elem[0]), Noeud.getNoeud(elem[1]), Double.parseDouble(elem[2]), Double.parseDouble(elem[3]));
+                }
+                br.close();
+                this.jTextField3.setText(String.valueOf(Arc.getarcs().size()));
+                Arc.displayArcs();
+
+                // Chargement des demandes
+                br = new BufferedReader(new FileReader(requestfile));
+                br.readLine();
+                while ((line = br.readLine()) != null) {
+                    elem = line.split("\t");
+                    new Demande(Noeud.getNoeud(elem[0]), Noeud.getNoeud(elem[1]), Double.parseDouble(elem[2]));
+                }
+                br.close();
+                this.jTextField4.setText(String.valueOf(Demande.getdemandes().size()));
+                Demande.displayDemandes();
+
+                // Implémentation dans le graphe
+                Graphe.getSingleton().getnoeuds().addAll(Noeud.getnoeuds());
+                Graphe.getSingleton().getarcs().addAll(Arc.getarcs());
+                Graphe.getSingleton().getdemandes().addAll(Demande.getdemandes());
+                System.out.println(Graphe.getSingleton().toString());
+
+            } catch (IOException x) {
+                System.err.println(x);
+            }
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
