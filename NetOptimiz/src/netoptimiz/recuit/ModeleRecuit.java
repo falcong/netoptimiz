@@ -38,6 +38,7 @@ public abstract class ModeleRecuit {
     }
 
     public double resoudre () {
+        //faire un new recuit
         return 0.0;
     }
 
