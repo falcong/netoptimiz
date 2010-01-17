@@ -22,6 +22,11 @@ public class Graphe {
         demandes = new ArrayList<Demande>();
     }
 
+    public void reset () {
+        this.noeuds.clear();
+        this.arcs.clear();
+        this.demandes.clear();
+    }
 
     public ArrayList<Noeud> getnoeuds () {
         return noeuds;
