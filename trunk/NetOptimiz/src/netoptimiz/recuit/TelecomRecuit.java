@@ -39,7 +39,6 @@ public class TelecomRecuit extends ModeleRecuit {
                 nbiteration=0;
             }
         }
-
     }
 
     public void faireMvt (Graphe g) {
