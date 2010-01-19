@@ -245,12 +245,15 @@ public class NetOptimizView extends FrameView {
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), resourceMap.getString("jPanel2.border.title"))); // NOI18N
         jPanel2.setName("jPanel2"); // NOI18N
 
+        buttonGroup1.add(jRadioButton1);
         jRadioButton1.setText(resourceMap.getString("jRadioButton1.text")); // NOI18N
         jRadioButton1.setName("jRadioButton1"); // NOI18N
 
+        buttonGroup1.add(jRadioButton2);
         jRadioButton2.setText(resourceMap.getString("jRadioButton2.text")); // NOI18N
         jRadioButton2.setName("jRadioButton2"); // NOI18N
 
+        buttonGroup1.add(jRadioButton3);
         jRadioButton3.setText(resourceMap.getString("jRadioButton3.text")); // NOI18N
         jRadioButton3.setName("jRadioButton3"); // NOI18N
 
