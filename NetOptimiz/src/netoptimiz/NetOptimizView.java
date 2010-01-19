@@ -239,6 +239,7 @@ public class NetOptimizView extends FrameView {
                     .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
+        jButton4.setAction(actionMap.get("solve")); // NOI18N
         jButton4.setText(resourceMap.getString("jButton4.text")); // NOI18N
         jButton4.setName("jButton4"); // NOI18N
 
@@ -247,14 +248,17 @@ public class NetOptimizView extends FrameView {
 
         buttonGroup1.add(jRadioButton1);
         jRadioButton1.setText(resourceMap.getString("jRadioButton1.text")); // NOI18N
+        jRadioButton1.setActionCommand(resourceMap.getString("jRadioButton1.actionCommand")); // NOI18N
         jRadioButton1.setName("jRadioButton1"); // NOI18N
 
         buttonGroup1.add(jRadioButton2);
         jRadioButton2.setText(resourceMap.getString("jRadioButton2.text")); // NOI18N
+        jRadioButton2.setActionCommand(resourceMap.getString("jRadioButton2.actionCommand")); // NOI18N
         jRadioButton2.setName("jRadioButton2"); // NOI18N
 
         buttonGroup1.add(jRadioButton3);
         jRadioButton3.setText(resourceMap.getString("jRadioButton3.text")); // NOI18N
+        jRadioButton3.setActionCommand(resourceMap.getString("jRadioButton3.actionCommand")); // NOI18N
         jRadioButton3.setName("jRadioButton3"); // NOI18N
 
         jTextField8.setEditable(false);
@@ -315,8 +319,10 @@ public class NetOptimizView extends FrameView {
         jLabel9.setText(resourceMap.getString("jLabel9.text")); // NOI18N
         jLabel9.setName("jLabel9"); // NOI18N
 
+        jSpinner1.setModel(new javax.swing.SpinnerNumberModel());
         jSpinner1.setName("jSpinner1"); // NOI18N
 
+        jSpinner2.setModel(new javax.swing.SpinnerNumberModel());
         jSpinner2.setName("jSpinner2"); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -642,6 +648,19 @@ public class NetOptimizView extends FrameView {
                 System.err.println(x);
             }
         }
+    }
+
+    @Action
+    public void solve() {
+        //String methode_de_resolution  = this.buttonGroup1.getSelection().getActionCommand();
+        //if (methode_de_resolution.equals("cplex")) {
+
+        //}else if (methode_de_resolution.equals("recuit")) {
+        //    Telecomrecuit.resoudre(this.jSpinner1.getModel().getValue().toString(),
+        //            this.jSpinner2.getModel().getValue().toString());
+        //}else if (methode_de_resolution.equals("vns")) {
+
+        //}
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
