@@ -1,6 +1,11 @@
 package netoptimiz;
 
+import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
+import edu.uci.ics.jung.graph.UndirectedSparseMultigraph;
+import java.util.List;
+import netoptimiz.graphe.Arc;
 import netoptimiz.graphe.Graphe;
+import netoptimiz.graphe.Noeud;
 
 public class Application {
 
@@ -43,7 +48,12 @@ public class Application {
     }
 
     public void optimiser () {
-    }
 
+    }
+      public void TrouverCheminPlusCourt(UndirectedSparseMultigraph<Noeud, Arc> gJung, Noeud n1, Noeud n2) {
+        // On appelle le Dijkstra pour ces 2 noeuds
+        DijkstraShortestPath<Noeud, Arc> alg = new DijkstraShortestPath(gJung);
+        List<Arc> chemin = alg.getPath(n1, n2);
+      }
 }
 

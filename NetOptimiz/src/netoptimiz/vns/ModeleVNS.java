@@ -1,13 +1,24 @@
 package netoptimiz.vns;
 
+import netoptimiz.graphe.Graphe;
+
 public abstract class ModeleVNS {
 
     private int kmax;
-
+    private static int bestVns;
     private int iterationsInternes;
 
     public ModeleVNS () {
+        kmax = 0;
+        iterationsInternes = 0;
     }
+
+
+    public ModeleVNS (int km , int iI) {
+        kmax = km;
+        iterationsInternes = iI;
+    }
+
 
     public int getIterationsInternes () {
         return iterationsInternes;
@@ -25,19 +36,30 @@ public abstract class ModeleVNS {
         this.kmax = val;
     }
 
-    public double resoudre () {
-        return 0.0;
-    }
+    public abstract void resoudre ();
+     /*   double coutMvt;
+        bestVns.faireMvt();
+        for(int i=0;i<kmax;i++)
+        {
+        this.valideMvt();
+        this.calculerCout();
+        if(coutMvt=this.deltaCout()< 0)
+        { 
+            bestVns = this;
+        this.faireMvt();}
+        else{
+         this.retourMvt();
+         this.faireMvt();
+        }
+        }
 
-    public abstract void faireMvt ();
-
-    public abstract void accepterMvt ();
-
-    public abstract void refuserMvt ();
-
-    public abstract double calculerCout ();
-
-    public abstract double deltaCout ();
+    }*/
+    public abstract boolean accepterMVT (Graphe g);
+    public abstract void faireMvt (Graphe g);
+    //public abstract void retourMvt(Graphe g);
+    //public abstract void valideMvt (Graphe g);
+    public abstract double calculerCout (Graphe g);
+    //public abstract double deltaCout ();
 
 }
 

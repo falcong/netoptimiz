@@ -5,7 +5,7 @@ import netoptimiz.graphe.Graphe;
 public abstract class ModeleRecuit {
 
     private double temperature;
-    private int decroissanceTemp;
+    private double decroissanceTemp;
     private int iterationsInternes;
     private int nombrePalliers;
 
@@ -13,11 +13,11 @@ public abstract class ModeleRecuit {
 
     }
 
-    public int getDecroissanceTemp () {
+    public double getDecroissanceTemp () {
         return decroissanceTemp;
     }
 
-    public void setDecroissanceTemp (int val) {
+    public void setDecroissanceTemp (double val) {
         this.decroissanceTemp = val;
     }
 
@@ -48,7 +48,7 @@ public abstract class ModeleRecuit {
     public void tempInitiale () {
     }
 
-    public abstract double resoudre ();
+    public abstract double resoudre (int nombrePalliers, int iterationsInternes);
 
     public abstract void faireMvt (Graphe g);
 

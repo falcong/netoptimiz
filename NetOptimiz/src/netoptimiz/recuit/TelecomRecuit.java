@@ -1,25 +1,35 @@
 package netoptimiz.recuit;
 
+import edu.uci.ics.jung.graph.UndirectedSparseMultigraph;
 import netoptimiz.Application;
 import netoptimiz.graphe.Arc;
-import netoptimiz.graphe.Noeud;
 import netoptimiz.graphe.Graphe;
+import netoptimiz.graphe.Noeud;
 
 public class TelecomRecuit extends ModeleRecuit {
 
     private double coutinitial;
     private double cout;
     private double deltacout;
+    private int nbIterationsEnCours;
     private Arc monArc;
-    private int nbiteration=0;
+    // pour savoir si on a ajouté ou supprimé une capacité
+    private boolean suppression;
     protected Graphe monGraphe;
-
 
     public TelecomRecuit () {
 
     }
 
-    public double resoudre () {
+    public double resoudre (int nombrePalliers, int iterationsInternes) {
+        // Initialisation du nombre de palliers de température
+        this.setNombrePalliers(nombrePalliers);
+        // Temporaire : pour définir la température initiale
+        this.setTemperature(20);
+        // On détermine la valeur de la température à décrémenter
+        this.setDecroissanceTemp(this.getTemperature()/this.getNombrePalliers());
+        // Afin de savoir où on en est pour les itérations par température
+        nbIterationsEnCours=0;
         // On déroule l'algo tant que la température est positive
         while (this.getTemperature()>0) {
             monGraphe=Application.getSingleton().getgraphe();
@@ -35,15 +45,16 @@ public class TelecomRecuit extends ModeleRecuit {
                 faireMvt (monGraphe);
             }
             // On incrémente le nombre d'itérations
-            nbiteration++;
+            nbIterationsEnCours++;
             // On compte le nombre d'itération pour savoir si on doit ensuite baisser la température
-            if (nbiteration==this.getIterationsInternes()) {
+            if (nbIterationsEnCours==this.getIterationsInternes()) {
+                // On baisse la température
                 this.setTemperature(this.getTemperature()-this.getDecroissanceTemp());
                 // On réinitialise le nombre d'itérations
-                nbiteration=0;
+                nbIterationsEnCours=0;
             }
         }
-        return 0.0;
+        return cout;
     }
 
     public void faireMvt (Graphe g) {
@@ -51,13 +62,19 @@ public class TelecomRecuit extends ModeleRecuit {
         int taille=g.getarcs().size();
         // On prend au hasard un des arcs et on change sa capacité
         monArc = g.getarcs().get((int)(Math.random()*taille));
-        if (monArc.getCapacite()==0) monArc.setCapacite(1);
-        else monArc.setCapacite(0);
+        if (monArc.getCapacite()==0) {
+            monArc.setCapacite(1);
+            suppression=false;
+        }
+        else {
+            monArc.setCapacite(0);
+            suppression=true;
+        }
     }
 
     public boolean accepterMVT (Graphe g) {
         // On commence par le calcul du deltacout et de la probabilité d'acceptation car c'est moins lourd à
-        // calculer que de vérifier que chaque noeud est bien relié au réseau
+        //  calculer que de vérifier que chaque noeud est bien relié au réseau
 
         // on calcule le cout du nouveau graphe
         deltacout = calculerCout(monGraphe);
@@ -74,6 +91,7 @@ public class TelecomRecuit extends ModeleRecuit {
             for (Noeud n : g.getnoeuds()) {
                 for (Arc a : g.getarcs()) {
                     // On regarde si la capacité de l'arc=1 et on regarde si son noeud origine ou extremité correspond au noeud courant
+
                     if (a.getCapacite()==1 && (a.getNoeudOrigine().equals(n) || a.getNoeudExtremite().equals(n))) {
                         break;
                     }
@@ -82,6 +100,22 @@ public class TelecomRecuit extends ModeleRecuit {
                 }
             }
         }
+
+        // En cas de suppression de capacité on veut vérifier que le réseau n'est pas coupé en 2 sous-réseaux
+        // pour celà on vérifie que les 2 noeuds concernés peuvent se joindre via d'autres arcs
+        if (suppression=true) {
+            // On récupère les noeuds extrémité et origine
+            Noeud n1=monArc.getNoeudOrigine();
+            Noeud n2=monArc.getNoeudExtremite();
+            // On crée un graphe Jung (non orienté)
+            UndirectedSparseMultigraph<Noeud, Arc> gJung = new UndirectedSparseMultigraph<Noeud, Arc>();
+            // On l'alimente pas les arcs de notre graphe
+            for (Arc a : Graphe.getSingleton().getarcs()) {
+              gJung.addEdge(a,a.getNoeudOrigine(), a.getNoeudExtremite());
+            }
+            // On regarde si les noeuds sont toujours reliés grace au Dijkstra
+            Application.getSingleton().TrouverCheminPlusCourt(gJung, n1, n2);
+        }
         return true;
     }
 
@@ -89,7 +123,7 @@ public class TelecomRecuit extends ModeleRecuit {
         for (Arc a : g.getarcs()) {
             // Si la capacité=1 alors on ajoute le cout de l'arc
             if (a.getCapacite()==1) {
-                cout=cout + a.getCapacite();
+                cout = cout + a.getCapacite();
             }
         }
         return cout;
