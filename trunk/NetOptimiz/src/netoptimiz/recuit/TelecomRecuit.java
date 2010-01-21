@@ -5,6 +5,7 @@ import netoptimiz.Application;
 import netoptimiz.graphe.Arc;
 import netoptimiz.graphe.Graphe;
 import netoptimiz.graphe.Noeud;
+import java.util.List;
 
 public class TelecomRecuit extends ModeleRecuit {
 
@@ -114,7 +115,9 @@ public class TelecomRecuit extends ModeleRecuit {
               gJung.addEdge(a,a.getNoeudOrigine(), a.getNoeudExtremite());
             }
             // On regarde si les noeuds sont toujours reliés grace au Dijkstra
-            Application.getSingleton().TrouverCheminPlusCourt(gJung, n1, n2);
+            List<Arc> chemin = Application.getSingleton().TrouverCheminPlusCourt(gJung, n1, n2);
+            // Si la liste de retour st vide, c'est que le réseau est coupé en 2 sous réseauw => non valide
+            if (chemin.isEmpty()) return false;
         }
         return true;
     }
