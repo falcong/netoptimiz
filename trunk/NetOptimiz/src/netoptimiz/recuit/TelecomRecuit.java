@@ -104,7 +104,7 @@ public class TelecomRecuit extends ModeleRecuit {
 
         // En cas de suppression de capacité on veut vérifier que le réseau n'est pas coupé en 2 sous-réseaux
         // pour celà on vérifie que les 2 noeuds concernés peuvent se joindre via d'autres arcs
-        if (suppression=true) {
+        if (suppression==true) {
             // On récupère les noeuds extrémité et origine
             Noeud n1=monArc.getNoeudOrigine();
             Noeud n2=monArc.getNoeudExtremite();
@@ -116,7 +116,7 @@ public class TelecomRecuit extends ModeleRecuit {
             }
             // On regarde si les noeuds sont toujours reliés grace au Dijkstra
             List<Arc> chemin = Application.getSingleton().TrouverCheminPlusCourt(gJung, n1, n2);
-            // Si la liste de retour st vide, c'est que le réseau est coupé en 2 sous réseauw => non valide
+            // Si la liste de retour est vide, c'est que le réseau est coupé en 2 sous réseaux => non valide
             if (chemin.isEmpty()) return false;
         }
         return true;
