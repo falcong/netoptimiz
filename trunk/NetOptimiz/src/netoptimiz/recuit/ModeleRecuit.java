@@ -13,8 +13,9 @@ public abstract class ModeleRecuit {
 
     }
 
+    // Valeur de la température à décrémenter (g(t)=µt , 0<µ<1. En pratique, µ≃0,95)
     public double getDecroissanceTemp () {
-        return decroissanceTemp;
+        return 0.95;
     }
 
     public void setDecroissanceTemp (double val) {
@@ -45,7 +46,18 @@ public abstract class ModeleRecuit {
         this.nombrePalliers = val;
     }
 
-    public void tempInitiale () {
+    public double tempInitiale (Graphe g) {
+        // Calcul du cout initial
+        double coutInitial=calculerCout(g);
+        // On génère un nombre de transformations couteuses
+
+        // On calcule le cout moyen OU détérioration moyenne
+
+        // Taux d'acceptation fixe à 60%
+
+        // tempInitiale= cout moyen / (ln(1/0.6))
+        double tempInitiale=Math.log(1/0.6);
+        return tempInitiale;
     }
 
     public abstract double resoudre (int nombrePalliers, int iterationsInternes);
