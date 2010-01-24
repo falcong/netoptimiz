@@ -1,59 +1,71 @@
 package netoptimiz.programmelineaire;
 
+import ilog.concert.IloNumVar;
+
 public class Variable {
 
-    private String nomVar;
+  private String nomVar;
 
-    private double coefficient;
+  //private double coefficient;
+  private int type;
+  private double borneInf;
+  private double borneSup;
+  private IloNumVar var;
 
-    private int type;
+  public Variable() {
+  }
 
-    private int borneInf;
+  public IloNumVar getVar() {
+    return var;
+  }
 
-    private int borneSup;
+  public void setVar(IloNumVar var) {
+    this.var = var;
+  }
 
-    public Variable () {
-    }
+  public double getBorneInf() {
+    return borneInf;
+  }
 
-    public int getBorneInf () {
-        return borneInf;
-    }
+  public void setBorneInf(double val) {
+    this.borneInf = val;
+  }
 
-    public void setBorneInf (int val) {
-        this.borneInf = val;
-    }
+  public double getBorneSup() {
+    return borneSup;
+  }
 
-    public int getBorneSup () {
-        return borneSup;
-    }
+  public void setBorneSup(double val) {
+    this.borneSup = val;
+  }
+  /*public double getCoefficient () {
+  return coefficient;
+  }
 
-    public void setBorneSup (int val) {
-        this.borneSup = val;
-    }
+  public void setCoefficient (double val) {
+  this.coefficient = val;
+  }*/
 
-    public double getCoefficient () {
-        return coefficient;
-    }
+  public String getNomVar() {
+    return nomVar;
+  }
 
-    public void setCoefficient (double val) {
-        this.coefficient = val;
-    }
+  public void setNomVar(String val) {
+    this.nomVar = val;
+  }
 
-    public String getNomVar () {
-        return nomVar;
-    }
+  public int getType() {
+    return type;
+  }
 
-    public void setNomVar (String val) {
-        this.nomVar = val;
-    }
-
-    public int getType () {
-        return type;
-    }
-
-    public void setType (int val) {
-        this.type = val;
-    }
-
+  /**
+   * Détermine si la variables est continue ou discrète
+   * @param val Valeurs possibles (0 ou 1) <br/>
+   * 0 signifie variable continue<br/>
+   * 1 signifie variable discrete
+   */
+  public void setType(int val) {
+    this.type = val;
+  }
 }
 

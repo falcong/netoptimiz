@@ -1,31 +1,33 @@
 package netoptimiz.programmelineaire;
 
-import java.util.ArrayList; 
+import java.util.ArrayList;
 
 public class Objectif {
 
-    private boolean maximiser;
+  private boolean maximiser;
+  private ArrayList<Terme> termes = new ArrayList<Terme>();
 
-    private ArrayList<Variable> variables;
+  public Objectif() {
+  }
 
-    public Objectif () {
-    }
+  public void addTerme(Terme v) {
+    termes.add(v);
+  }
 
-    public boolean getmaximiser () {
-        return maximiser;
-    }
+  public boolean isMaximiser() {
+    return maximiser;
+  }
 
-    public void setmaximiser (boolean val) {
-        this.maximiser = val;
-    }
+  public void setMaximiser(boolean maximiser) {
+    this.maximiser = maximiser;
+  }
 
-    public ArrayList<Variable> getvariables () {
-        return variables;
-    }
+  public ArrayList<Terme> getTermes() {
+    return termes;
+  }
 
-    public void setvariables (ArrayList<Variable> val) {
-        this.variables = val;
-    }
-
+  public void setTermes(ArrayList<Terme> termes) {
+    this.termes = termes;
+  }
 }
 

@@ -1,9 +1,11 @@
 /*
  * NetOptimizView.java
  */
-
 package netoptimiz;
 
+import ilog.concert.IloException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import netoptimiz.graphe.*;
 
 import org.jdesktop.application.Action;
@@ -25,6 +27,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import netoptimiz.programmelineaire.ProgrammeLineaire;
 import netoptimiz.recuit.TelecomRecuit;
 
 /**
@@ -32,83 +35,86 @@ import netoptimiz.recuit.TelecomRecuit;
  */
 public class NetOptimizView extends FrameView {
 
-    public NetOptimizView(SingleFrameApplication app) {
-        super(app);
+  public NetOptimizView(SingleFrameApplication app) {
+    super(app);
 
-        initComponents();
+    initComponents();
 
-        // status bar initialization - message timeout, idle icon and busy animation, etc
-        ResourceMap resourceMap = getResourceMap();
-        int messageTimeout = resourceMap.getInteger("StatusBar.messageTimeout");
-        messageTimer = new Timer(messageTimeout, new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                statusMessageLabel.setText("");
-            }
-        });
-        messageTimer.setRepeats(false);
-        int busyAnimationRate = resourceMap.getInteger("StatusBar.busyAnimationRate");
-        for (int i = 0; i < busyIcons.length; i++) {
-            busyIcons[i] = resourceMap.getIcon("StatusBar.busyIcons[" + i + "]");
-        }
-        busyIconTimer = new Timer(busyAnimationRate, new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                busyIconIndex = (busyIconIndex + 1) % busyIcons.length;
-                statusAnimationLabel.setIcon(busyIcons[busyIconIndex]);
-            }
-        });
-        idleIcon = resourceMap.getIcon("StatusBar.idleIcon");
-        statusAnimationLabel.setIcon(idleIcon);
-        progressBar.setVisible(false);
+    // status bar initialization - message timeout, idle icon and busy animation, etc
+    ResourceMap resourceMap = getResourceMap();
+    int messageTimeout = resourceMap.getInteger("StatusBar.messageTimeout");
+    messageTimer = new Timer(messageTimeout, new ActionListener() {
 
-        // connecting action tasks to status bar via TaskMonitor
-        TaskMonitor taskMonitor = new TaskMonitor(getApplication().getContext());
-        taskMonitor.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                String propertyName = evt.getPropertyName();
-                if ("started".equals(propertyName)) {
-                    if (!busyIconTimer.isRunning()) {
-                        statusAnimationLabel.setIcon(busyIcons[0]);
-                        busyIconIndex = 0;
-                        busyIconTimer.start();
-                    }
-                    progressBar.setVisible(true);
-                    progressBar.setIndeterminate(true);
-                } else if ("done".equals(propertyName)) {
-                    busyIconTimer.stop();
-                    statusAnimationLabel.setIcon(idleIcon);
-                    progressBar.setVisible(false);
-                    progressBar.setValue(0);
-                } else if ("message".equals(propertyName)) {
-                    String text = (String)(evt.getNewValue());
-                    statusMessageLabel.setText((text == null) ? "" : text);
-                    messageTimer.restart();
-                } else if ("progress".equals(propertyName)) {
-                    int value = (Integer)(evt.getNewValue());
-                    progressBar.setVisible(true);
-                    progressBar.setIndeterminate(false);
-                    progressBar.setValue(value);
-                }
-            }
-        });
-        //this.LoadData();
+      public void actionPerformed(ActionEvent e) {
+        statusMessageLabel.setText("");
+      }
+    });
+    messageTimer.setRepeats(false);
+    int busyAnimationRate = resourceMap.getInteger("StatusBar.busyAnimationRate");
+    for (int i = 0; i < busyIcons.length; i++) {
+      busyIcons[i] = resourceMap.getIcon("StatusBar.busyIcons[" + i + "]");
     }
+    busyIconTimer = new Timer(busyAnimationRate, new ActionListener() {
 
-    @Action
-    public void showAboutBox() {
-        if (aboutBox == null) {
-            JFrame mainFrame = NetOptimizApp.getApplication().getMainFrame();
-            aboutBox = new NetOptimizAboutBox(mainFrame);
-            aboutBox.setLocationRelativeTo(mainFrame);
+      public void actionPerformed(ActionEvent e) {
+        busyIconIndex = (busyIconIndex + 1) % busyIcons.length;
+        statusAnimationLabel.setIcon(busyIcons[busyIconIndex]);
+      }
+    });
+    idleIcon = resourceMap.getIcon("StatusBar.idleIcon");
+    statusAnimationLabel.setIcon(idleIcon);
+    progressBar.setVisible(false);
+
+    // connecting action tasks to status bar via TaskMonitor
+    TaskMonitor taskMonitor = new TaskMonitor(getApplication().getContext());
+    taskMonitor.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+
+      public void propertyChange(java.beans.PropertyChangeEvent evt) {
+        String propertyName = evt.getPropertyName();
+        if ("started".equals(propertyName)) {
+          if (!busyIconTimer.isRunning()) {
+            statusAnimationLabel.setIcon(busyIcons[0]);
+            busyIconIndex = 0;
+            busyIconTimer.start();
+          }
+          progressBar.setVisible(true);
+          progressBar.setIndeterminate(true);
+        } else if ("done".equals(propertyName)) {
+          busyIconTimer.stop();
+          statusAnimationLabel.setIcon(idleIcon);
+          progressBar.setVisible(false);
+          progressBar.setValue(0);
+        } else if ("message".equals(propertyName)) {
+          String text = (String) (evt.getNewValue());
+          statusMessageLabel.setText((text == null) ? "" : text);
+          messageTimer.restart();
+        } else if ("progress".equals(propertyName)) {
+          int value = (Integer) (evt.getNewValue());
+          progressBar.setVisible(true);
+          progressBar.setIndeterminate(false);
+          progressBar.setValue(value);
         }
-        NetOptimizApp.getApplication().show(aboutBox);
-    }
+      }
+    });
+  //this.LoadData();
+  }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
+  @Action
+  public void showAboutBox() {
+    if (aboutBox == null) {
+      JFrame mainFrame = NetOptimizApp.getApplication().getMainFrame();
+      aboutBox = new NetOptimizAboutBox(mainFrame);
+      aboutBox.setLocationRelativeTo(mainFrame);
+    }
+    NetOptimizApp.getApplication().show(aboutBox);
+  }
+
+  /** This method is called from within the constructor to
+   * initialize the form.
+   * WARNING: Do NOT modify this code. The content of this method is
+   * always regenerated by the Form Editor.
+   */
+  @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -595,274 +601,278 @@ public class NetOptimizView extends FrameView {
         setStatusBar(statusPanel);
     }// </editor-fold>//GEN-END:initComponents
 
-    @Action
-    public void LoadData() {
-        JFileChooser jfc1 = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter(
-        "Fichiers de Noeuds, d'Arcs ou de Demandes", "nod", "arc", "dem");
-        jfc1.setFileFilter(filter);
-        this.getFrame().add(jfc1);
-        jfc1.showOpenDialog(null);
-        if (jfc1.getSelectedFile() != null) {
-            File sourcefile = jfc1.getSelectedFile();
-            //File sourcefile = new File("d:\\Documents and Settings\\T0031814\\Bureau\\jeu-de-test\\Net_8.arc");
-            this.getFrame().remove(jfc1);
+  @Action
+  public void LoadData() {
+    JFileChooser jfc1 = new JFileChooser();
+    FileNameExtensionFilter filter = new FileNameExtensionFilter(
+            "Fichiers de Noeuds, d'Arcs ou de Demandes", "nod", "arc", "dem");
+    jfc1.setFileFilter(filter);
+    this.getFrame().add(jfc1);
+    jfc1.showOpenDialog(null);
+    if (jfc1.getSelectedFile() != null) {
+      File sourcefile = jfc1.getSelectedFile();
+      //File sourcefile = new File("d:\\Documents and Settings\\T0031814\\Bureau\\jeu-de-test\\Net_8.arc");
+      this.getFrame().remove(jfc1);
 
-            String sourcename = sourcefile.getName().substring(0, sourcefile.getName().lastIndexOf("."));
-            String sourcepath = sourcefile.getParent() + "\\" + sourcename;
+      String sourcename = sourcefile.getName().substring(0, sourcefile.getName().lastIndexOf("."));
+      String sourcepath = sourcefile.getParent() + "\\" + sourcename;
 
-            File nodefile = new File(sourcepath + ".nod");
-            File arcfile = new File(sourcepath + ".arc");
-            File requestfile = new File(sourcepath + ".dem");
+      File nodefile = new File(sourcepath + ".nod");
+      File arcfile = new File(sourcepath + ".arc");
+      File requestfile = new File(sourcepath + ".dem");
 
-            // verification d'intégrité des fichiers à parser
-            if ( !nodefile.canRead() ) {
-                //JOptionPane jopError = new JOptionPane();
-                JOptionPane.showMessageDialog(null, "Le fichier de noeuds " + sourcepath + ".nod" +
-                        " n'existe pas ou ne peut être lu.\n" +
-                        "Le chargement des données a été abdandonné.", "Erreur", JOptionPane.ERROR_MESSAGE);
-                return;
-            } else if ( !arcfile.canRead() ) {
-                //JOptionPane jopError = new JOptionPane();
-                JOptionPane.showMessageDialog(null, "Le fichier d'arcs " + sourcepath + ".arc" +
-                        " n'existe pas ou ne peut être lu.\n" +
-                        "Le chargement des données a été abdandonné.", "Erreur", JOptionPane.ERROR_MESSAGE);
-                return;
-            } else if ( !requestfile.canRead() ) {
-                //JOptionPane jopError = new JOptionPane();
-                JOptionPane.showMessageDialog(null, "Le fichier de demandes " + sourcepath + ".dem" +
-                        " n'existe pas ou ne peut être lu.\n" +
-                        "Le chargement des données a été abdandonné.", "Erreur", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+      // verification d'intégrité des fichiers à parser
+      if (!nodefile.canRead()) {
+        //JOptionPane jopError = new JOptionPane();
+        JOptionPane.showMessageDialog(null, "Le fichier de noeuds " + sourcepath + ".nod" +
+                " n'existe pas ou ne peut être lu.\n" +
+                "Le chargement des données a été abdandonné.", "Erreur", JOptionPane.ERROR_MESSAGE);
+        return;
+      } else if (!arcfile.canRead()) {
+        //JOptionPane jopError = new JOptionPane();
+        JOptionPane.showMessageDialog(null, "Le fichier d'arcs " + sourcepath + ".arc" +
+                " n'existe pas ou ne peut être lu.\n" +
+                "Le chargement des données a été abdandonné.", "Erreur", JOptionPane.ERROR_MESSAGE);
+        return;
+      } else if (!requestfile.canRead()) {
+        //JOptionPane jopError = new JOptionPane();
+        JOptionPane.showMessageDialog(null, "Le fichier de demandes " + sourcepath + ".dem" +
+                " n'existe pas ou ne peut être lu.\n" +
+                "Le chargement des données a été abdandonné.", "Erreur", JOptionPane.ERROR_MESSAGE);
+        return;
+      }
 
-            BufferedReader br = null;
-            try {
-                String line = null;
-                String[] elem = null;
-                Integer line_number = 1;
-                ArrayList<String> node_names = new ArrayList<String>();
-                boolean declarable_node = false;
-                double test_double_parse;
+      BufferedReader br = null;
+      try {
+        String line = null;
+        String[] elem = null;
+        Integer line_number = 1;
+        ArrayList<String> node_names = new ArrayList<String>();
+        boolean declarable_node = false;
+        double test_double_parse;
 
-                //
-                // vérification d'intégrité des fichiers de données
-                //
-                // 1. noeuds
-                br = new BufferedReader(new FileReader(nodefile));
-                br.readLine();
-                while ((line = br.readLine()) != null) {
-                    line_number++ ;
-                    elem = line.split("\t");
-                    if (elem.length != 3) {
-                        JOptionPane.showMessageDialog(null, "Erreur dans le fichier de noeuds " +
-                                sourcepath + ".nod :\n" +
-                                "* ligne "+ line_number +" : nombre d'arguments incorrect.\n" +
-                                "Le chargement des données a été abdandonné.",
-                                "Chargement de données", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    } else node_names.add(elem[0]);
-                    //try {
-                    //    test_double_parse = Double.parseDouble(elem[1]);
-                    //    test_double_parse = Double.parseDouble(elem[2]);
-                    //} catch (FormatException e) {
+        //
+        // vérification d'intégrité des fichiers de données
+        //
+        // 1. noeuds
+        br = new BufferedReader(new FileReader(nodefile));
+        br.readLine();
+        while ((line = br.readLine()) != null) {
+          line_number++;
+          elem = line.split("\t");
+          if (elem.length != 3) {
+            JOptionPane.showMessageDialog(null, "Erreur dans le fichier de noeuds " +
+                    sourcepath + ".nod :\n" +
+                    "* ligne " + line_number + " : nombre d'arguments incorrect.\n" +
+                    "Le chargement des données a été abdandonné.",
+                    "Chargement de données", JOptionPane.ERROR_MESSAGE);
+            return;
+          } else {
+            node_names.add(elem[0]);
+          }
+        //try {
+        //    test_double_parse = Double.parseDouble(elem[1]);
+        //    test_double_parse = Double.parseDouble(elem[2]);
+        //} catch (FormatException e) {
               /* pb à l'import de com.sun.java.util.jar.pack.Attribute.FormatException */
-                    //    JOptionPane.showMessageDialog(null, "Erreur dans le fichier de noeuds " +
-                    //            sourcepath + ".nod :\n" +
-                    //    " erreur de conversion en type 'double' à la ligne" + line_number, "Erreur", JOptionPane.ERROR_MESSAGE);;
-                    //    return;
-                    //}
-                }
-                br.close();
+        //    JOptionPane.showMessageDialog(null, "Erreur dans le fichier de noeuds " +
+        //            sourcepath + ".nod :\n" +
+        //    " erreur de conversion en type 'double' à la ligne" + line_number, "Erreur", JOptionPane.ERROR_MESSAGE);;
+        //    return;
+        //}
+        }
+        br.close();
 
-                // 2. arcs
-                br = new BufferedReader(new FileReader(arcfile));
-                br.readLine();
-                line_number = 1;
-                while ((line = br.readLine()) != null) {
-                    line_number++ ;
-                    elem = line.split("\t");
-                    if (elem.length != 4) {
-                        JOptionPane.showMessageDialog(null, "Erreur dans le fichier d'arcs " +
-                                sourcepath + ".arc :\n" +
-                                "* ligne "+ line_number +" : nombre d'arguments incorrect.\n" +
-                                "Le chargement des données a été abdandonné.",
-                                "Chargement de données", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                    // noeud origine
-                    declarable_node = false;
-                    for (String name : node_names) {
-                        if ( elem[0].equals(name) ) {
-                            declarable_node = true;
-                        }
-                    }
-                    if ( !declarable_node ) {
-                        node_names.clear();
-                        JOptionPane.showMessageDialog(null, "Erreur dans le fichier d'arcs " +
-                                sourcepath + ".arc :\n" +
-                                "* ligne "+ line_number +" : le noeud "+ elem[0] +" n'existe pas dans le fichier de noeuds.\n" +
-                                "Le chargement des données a été abdandonné.",
-                                "Chargement de données", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                    // noeud extremité
-                    declarable_node = false;
-                    for (String name : node_names) {
-                       if ( elem[1].equals(name) ) {
-                            declarable_node = true;
-                        }
-                    }
-                    if ( !declarable_node ) {
-                        node_names.clear();
-                        JOptionPane.showMessageDialog(null, "Erreur dans le fichier d'arcs " +
-                                sourcepath + ".arc :\n" +
-                                "* ligne "+ line_number +" : le noeud "+ elem[1] +" n'existe pas dans le fichier de noeuds.\n" +
-                                "Le chargement des données a été abdandonné.",
-                                "Chargement de données", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                }
-                br.close();
-
-                // 3. Demandes
-                br = new BufferedReader(new FileReader(requestfile));
-                br.readLine();
-                line_number = 1;
-                while ((line = br.readLine()) != null) {
-                    line_number++ ;
-                    elem = line.split("\t");
-                    if (elem.length != 3) {
-                        JOptionPane.showMessageDialog(null, "Erreur dans le fichier de demandes " +
-                                sourcepath + ".dem :\n" +
-                                "* ligne "+ line_number +" : nombre d'arguments incorrect.\n" +
-                                "Le chargement des données a été abdandonné.",
-                                "Chargement de données", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                    // noeud origine
-                    declarable_node = false;
-                    for (String name : node_names) {
-                        if ( elem[0].equals(name) ) {
-                            declarable_node = true;
-                        }
-                    }
-                    if ( !declarable_node ) {
-                        node_names.clear();
-                        JOptionPane.showMessageDialog(null, "Erreur dans le fichier de demandes " +
-                                sourcepath + ".dem :\n" +
-                                "* ligne "+ line_number +" : le noeud "+ elem[0] +" n'existe pas dans le fichier de noeuds.\n" +
-                                "Le chargement des données a été abdandonné.",
-                                "Chargement de données", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                    // noeud extremité
-                    declarable_node = false;
-                    for (String name : node_names) {
-                       if ( elem[1].equals(name) ) {
-                            declarable_node = true;
-                        }
-                    }
-                    if ( !declarable_node ) {
-                        node_names.clear();
-                        JOptionPane.showMessageDialog(null, "Erreur dans le fichier de demandes " +
-                                sourcepath + ".dem :\n" +
-                                "* ligne "+ line_number +" : le noeud "+ elem[1] +" n'existe pas dans le fichier de noeuds.\n" +
-                                "Le chargement des données a été abdandonné.",
-                                "Chargement de données", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                }
-                br.close();
-                node_names.clear();
-
-                //
-                // Initialisation des objets depuis les données des fichiers
-                //
-
-                this.jTextField1.setText(sourcepath + ".*");
-
-                // Réinitialisation des données précédement chargées
-                Application.getSingleton().getgrapheOriginal().reset();
-                Noeud.getnoeuds().clear();
-                Arc.getarcs().clear();
-                Demande.getdemandes().clear();
-
-                // Chargement des noeuds
-                br = new BufferedReader(new FileReader(nodefile));
-                br.readLine();
-                while ((line = br.readLine()) != null) {
-                    elem = line.split("\t");
-                    new Noeud(elem[0], Double.parseDouble(elem[1]), Double.parseDouble(elem[2]));
-                }
-                br.close();
-                this.jTextField2.setText(String.valueOf(Noeud.getnoeuds().size()));
-                Noeud.displayNoeuds();
-
-
-                // Chargement des arcs
-                br = new BufferedReader(new FileReader(arcfile));
-                br.readLine();
-                while ((line = br.readLine()) != null) {
-                    elem = line.split("\t");
-                    new Arc(Noeud.getNoeud(elem[0]), Noeud.getNoeud(elem[1]), Double.parseDouble(elem[2]), Double.parseDouble(elem[3]));
-                }
-                br.close();
-                this.jTextField3.setText(String.valueOf(Arc.getarcs().size()));
-                Arc.displayArcs();
-
-                // Chargement des demandes
-                br = new BufferedReader(new FileReader(requestfile));
-                br.readLine();
-                while ((line = br.readLine()) != null) {
-                    elem = line.split("\t");
-                    new Demande(Noeud.getNoeud(elem[0]), Noeud.getNoeud(elem[1]), Double.parseDouble(elem[2]));
-                }
-                br.close();
-                this.jTextField4.setText(String.valueOf(Demande.getdemandes().size()));
-                Demande.displayDemandes();
-
-                // Implémentation dans le graphe
-                Application.getSingleton().getgrapheOriginal().getnoeuds().addAll(Noeud.getnoeuds());
-                Application.getSingleton().getgrapheOriginal().getarcs().addAll(Arc.getarcs());
-                Application.getSingleton().getgrapheOriginal().getdemandes().addAll(Demande.getdemandes());
-                JOptionPane.showMessageDialog(null, "Importation des données réussie !",
-                                "Chargement de données", JOptionPane.INFORMATION_MESSAGE);
-                System.out.println(Application.getSingleton().getgrapheOriginal().toString());
-
-            } catch (IOException x) {
-                System.err.println(x);
+        // 2. arcs
+        br = new BufferedReader(new FileReader(arcfile));
+        br.readLine();
+        line_number = 1;
+        while ((line = br.readLine()) != null) {
+          line_number++;
+          elem = line.split("\t");
+          if (elem.length != 4) {
+            JOptionPane.showMessageDialog(null, "Erreur dans le fichier d'arcs " +
+                    sourcepath + ".arc :\n" +
+                    "* ligne " + line_number + " : nombre d'arguments incorrect.\n" +
+                    "Le chargement des données a été abdandonné.",
+                    "Chargement de données", JOptionPane.ERROR_MESSAGE);
+            return;
+          }
+          // noeud origine
+          declarable_node = false;
+          for (String name : node_names) {
+            if (elem[0].equals(name)) {
+              declarable_node = true;
             }
+          }
+          if (!declarable_node) {
+            node_names.clear();
+            JOptionPane.showMessageDialog(null, "Erreur dans le fichier d'arcs " +
+                    sourcepath + ".arc :\n" +
+                    "* ligne " + line_number + " : le noeud " + elem[0] + " n'existe pas dans le fichier de noeuds.\n" +
+                    "Le chargement des données a été abdandonné.",
+                    "Chargement de données", JOptionPane.ERROR_MESSAGE);
+            return;
+          }
+          // noeud extremité
+          declarable_node = false;
+          for (String name : node_names) {
+            if (elem[1].equals(name)) {
+              declarable_node = true;
+            }
+          }
+          if (!declarable_node) {
+            node_names.clear();
+            JOptionPane.showMessageDialog(null, "Erreur dans le fichier d'arcs " +
+                    sourcepath + ".arc :\n" +
+                    "* ligne " + line_number + " : le noeud " + elem[1] + " n'existe pas dans le fichier de noeuds.\n" +
+                    "Le chargement des données a été abdandonné.",
+                    "Chargement de données", JOptionPane.ERROR_MESSAGE);
+            return;
+          }
         }
-    }
+        br.close();
 
-    @Action
-    public void solve() {
-        this.refresh(" ");
-        String methode_de_resolution  = this.buttonGroup1.getSelection().getActionCommand();
-        if (methode_de_resolution.equals("cplex")) {
-
-        }else if (methode_de_resolution.equals("recuit")) {
-        //JOptionPane.showMessageDialog(null,
-        //        methode_de_resolution + " " + this.jSpinner1.getModel().getValue().toString()
-        //        + " " + this.jSpinner2.getModel().getValue().toString(),
-        //        "Chargement de données", JOptionPane.INFORMATION_MESSAGE);
-        this.refresh(methode_de_resolution + " " + this.jSpinner1.getModel().getValue().toString()
-        + " " + this.jSpinner2.getModel().getValue().toString());
-        TelecomRecuit tr = new TelecomRecuit();
-        double soluce = tr.resoudre(Integer.parseInt(this.jSpinner1.getModel().getValue().toString()),
-        Integer.parseInt(this.jSpinner2.getModel().getValue().toString()));
-
-        this.refresh("solution : " + soluce);
-        this.refresh("arcs : " + Application.getSingleton().getgrapheOriginal().getarcs().size());
-        }else if (methode_de_resolution.equals("vns")) {
-
+        // 3. Demandes
+        br = new BufferedReader(new FileReader(requestfile));
+        br.readLine();
+        line_number = 1;
+        while ((line = br.readLine()) != null) {
+          line_number++;
+          elem = line.split("\t");
+          if (elem.length != 3) {
+            JOptionPane.showMessageDialog(null, "Erreur dans le fichier de demandes " +
+                    sourcepath + ".dem :\n" +
+                    "* ligne " + line_number + " : nombre d'arguments incorrect.\n" +
+                    "Le chargement des données a été abdandonné.",
+                    "Chargement de données", JOptionPane.ERROR_MESSAGE);
+            return;
+          }
+          // noeud origine
+          declarable_node = false;
+          for (String name : node_names) {
+            if (elem[0].equals(name)) {
+              declarable_node = true;
+            }
+          }
+          if (!declarable_node) {
+            node_names.clear();
+            JOptionPane.showMessageDialog(null, "Erreur dans le fichier de demandes " +
+                    sourcepath + ".dem :\n" +
+                    "* ligne " + line_number + " : le noeud " + elem[0] + " n'existe pas dans le fichier de noeuds.\n" +
+                    "Le chargement des données a été abdandonné.",
+                    "Chargement de données", JOptionPane.ERROR_MESSAGE);
+            return;
+          }
+          // noeud extremité
+          declarable_node = false;
+          for (String name : node_names) {
+            if (elem[1].equals(name)) {
+              declarable_node = true;
+            }
+          }
+          if (!declarable_node) {
+            node_names.clear();
+            JOptionPane.showMessageDialog(null, "Erreur dans le fichier de demandes " +
+                    sourcepath + ".dem :\n" +
+                    "* ligne " + line_number + " : le noeud " + elem[1] + " n'existe pas dans le fichier de noeuds.\n" +
+                    "Le chargement des données a été abdandonné.",
+                    "Chargement de données", JOptionPane.ERROR_MESSAGE);
+            return;
+          }
         }
-    }
+        br.close();
+        node_names.clear();
 
-    public void refresh(String s) {
-        this.jTextArea1.setText( this.jTextArea1.getText() + "\n" + s);
+        //
+        // Initialisation des objets depuis les données des fichiers
+        //
+
+        this.jTextField1.setText(sourcepath + ".*");
+
+        // Réinitialisation des données précédement chargées
+        Application.getSingleton().getgrapheOriginal().reset();
+        Noeud.getnoeuds().clear();
+        Arc.getarcs().clear();
+        Demande.getdemandes().clear();
+
+        // Chargement des noeuds
+        br = new BufferedReader(new FileReader(nodefile));
+        br.readLine();
+        while ((line = br.readLine()) != null) {
+          elem = line.split("\t");
+          new Noeud(elem[0], Double.parseDouble(elem[1]), Double.parseDouble(elem[2]));
+        }
+        br.close();
+        this.jTextField2.setText(String.valueOf(Noeud.getnoeuds().size()));
+        Noeud.displayNoeuds();
+
+
+        // Chargement des arcs
+        br = new BufferedReader(new FileReader(arcfile));
+        br.readLine();
+        while ((line = br.readLine()) != null) {
+          elem = line.split("\t");
+          new Arc(Noeud.getNoeud(elem[0]), Noeud.getNoeud(elem[1]), Double.parseDouble(elem[2]), Double.parseDouble(elem[3]));
+        }
+        br.close();
+        this.jTextField3.setText(String.valueOf(Arc.getarcs().size()));
+        Arc.displayArcs();
+
+        // Chargement des demandes
+        br = new BufferedReader(new FileReader(requestfile));
+        br.readLine();
+        while ((line = br.readLine()) != null) {
+          elem = line.split("\t");
+          new Demande(Noeud.getNoeud(elem[0]), Noeud.getNoeud(elem[1]), Double.parseDouble(elem[2]));
+        }
+        br.close();
+        this.jTextField4.setText(String.valueOf(Demande.getdemandes().size()));
+        Demande.displayDemandes();
+
+        // Implémentation dans le graphe
+        Application.getSingleton().getgrapheOriginal().getnoeuds().addAll(Noeud.getnoeuds());
+        Application.getSingleton().getgrapheOriginal().getarcs().addAll(Arc.getarcs());
+        Application.getSingleton().getgrapheOriginal().getdemandes().addAll(Demande.getdemandes());
+        JOptionPane.showMessageDialog(null, "Importation des données réussie !",
+                "Chargement de données", JOptionPane.INFORMATION_MESSAGE);
+        System.out.println(Application.getSingleton().getgrapheOriginal().toString());
+
+      } catch (IOException x) {
+        System.err.println(x);
+      }
     }
+  }
+
+  @Action
+  public void solve() {
+    this.refresh(" ");
+    String methode_de_resolution = this.buttonGroup1.getSelection().getActionCommand();
+    if (methode_de_resolution.equals("cplex")) {
+      try {
+        (new ProgrammeLineaire()).resoudre();
+      } catch (IloException ex) {
+        this.refresh("Cplex problem : " + ex.getMessage());
+      }
+    } else if (methode_de_resolution.equals("recuit")) {
+      //JOptionPane.showMessageDialog(null,
+      //        methode_de_resolution + " " + this.jSpinner1.getModel().getValue().toString()
+      //        + " " + this.jSpinner2.getModel().getValue().toString(),
+      //        "Chargement de données", JOptionPane.INFORMATION_MESSAGE);
+      this.refresh(methode_de_resolution + " " + this.jSpinner1.getModel().getValue().toString() + " " + this.jSpinner2.getModel().getValue().toString());
+      TelecomRecuit tr = new TelecomRecuit();
+      double soluce = tr.resoudre(Integer.parseInt(this.jSpinner1.getModel().getValue().toString()),
+              Integer.parseInt(this.jSpinner2.getModel().getValue().toString()));
+
+      this.refresh("solution : " + soluce);
+      this.refresh("arcs : " + Application.getSingleton().getgrapheOriginal().getarcs().size());
+    } else if (methode_de_resolution.equals("vns")) {
+    }
+  }
+
+  public void refresh(String s) {
+    this.jTextArea1.setText(this.jTextArea1.getText() + "\n" + s);
+  }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
@@ -910,12 +920,10 @@ public class NetOptimizView extends FrameView {
     private javax.swing.JLabel statusMessageLabel;
     private javax.swing.JPanel statusPanel;
     // End of variables declaration//GEN-END:variables
-
-    private final Timer messageTimer;
-    private final Timer busyIconTimer;
-    private final Icon idleIcon;
-    private final Icon[] busyIcons = new Icon[15];
-    private int busyIconIndex = 0;
-
-    private JDialog aboutBox;
+  private final Timer messageTimer;
+  private final Timer busyIconTimer;
+  private final Icon idleIcon;
+  private final Icon[] busyIcons = new Icon[15];
+  private int busyIconIndex = 0;
+  private JDialog aboutBox;
 }
