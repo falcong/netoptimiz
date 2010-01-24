@@ -6,62 +6,59 @@ import netoptimiz.graphe.Arc;
 import netoptimiz.graphe.Graphe;
 import netoptimiz.graphe.Noeud;
 import java.util.List;
+import netoptimiz.NetOptimizApp;
 
 public class TelecomRecuit extends ModeleRecuit {
 
     private double coutInitial;
     private double cout;
     private double deltaCout;
-    private int nbIterationsEnCours=0;
-    private  double capaciteInitiale;
+    private double capaciteInitiale;
+    private double kBoltzman = 1.3806 * Math.pow(10,-23);
     private Arc monArc;
     // pour savoir si on a ajouté ou supprimé une capacité
     private boolean suppression;
     protected Graphe monGraphe;
 
     public TelecomRecuit () {
+        monGraphe = Application.getSingleton().getgrapheOriginal().clone();
+    }
 
+    public void afficherInfos(String s) {
+        NetOptimizApp.getApplication().getView().refresh(s);
     }
 
     public double resoudre (int nombrePalliers, int iterationsInternes) {
         // On récupère le graphe
-        monGraphe=Application.getSingleton().getgraphe();
+        monArc = monGraphe.getarcs().get(0);
         // Initialisation du nombre de paliers de température
         this.setNombrePalliers(nombrePalliers);
+        // Initialisation du nombre d'itérations internes
+        this.setIterationsInternes(iterationsInternes);
         // Calcule et affecte la température initiale
-        double tempInitiale=tempInitiale(monGraphe);
+        //double tempInitiale=tempInitiale(monGraphe);
+        double tempInitiale=100;
         this.setTemperature(tempInitiale);
         // On récupère la valeur de la capacité initiale
         capaciteInitiale = monArc.getCapacite();
         // On déroule l'algo tant que l'état gelé n'est pas atteint (nombre de paliers atteint)
-        while (this.getNombrePalliers()>0) {
+        for (int nbPalliers = 1; nbPalliers <= this.getNombrePalliers(); nbPalliers++) {
             // Calcul du cout initial OU de la dernière acceptation
             coutInitial=calculerCout(monGraphe);
             // boucle pour les itérations par température
-            do {
-                //Pour le mouvement
-                faireMvt (monGraphe);
-                // On incrémente le nombre d'itérations
-                nbIterationsEnCours++;
-                // On vérifie que la transformation n'est pas valide (pas forcément vrai du à la permière itération)
-                // Si c'est le cas on revient en arrière et on repart dans la boucle pour refaire un mvt
+            for (int nbIterationsEnCours = 1; nbIterationsEnCours <= this.getIterationsInternes(); nbIterationsEnCours++) {
+                faireMvt(monGraphe);
                 if (accepterMVT(monGraphe)==false) {
                     if (monArc.getCapacite()==0) monArc.setCapacite(capaciteInitiale);
                     else monArc.setCapacite(0);
                 }
-                // On compte le nombre d'itération pour savoir si on doit quitter la boucle
-                if (nbIterationsEnCours>=this.getIterationsInternes()) {
-                    // On baisse la température
-                    this.setTemperature(this.getTemperature()*this.getDecroissanceTemp());
-                    // On décrémente le palier
-                    this.setNombrePalliers(nombrePalliers-1);
-                    // On réinitialise le nombre d'itérations
-                    nbIterationsEnCours=0;
-                    // On sort du do-while
-                    break;
+                else {
                 }
             }
-            while (accepterMVT(monGraphe)==false);
+            // On baisse la température
+            this.setTemperature(this.getTemperature() * this.getDecroissanceTemp());
+            // On décrémente le palier
+            this.setNombrePalliers(nombrePalliers - 1);
         }
         return calculerCout(monGraphe);
     }
@@ -69,6 +66,7 @@ public class TelecomRecuit extends ModeleRecuit {
     public void faireMvt (Graphe g) {
         // On récupère le nombre d'arcs du graphe
         int taille=g.getarcs().size();
+        double capa = monArc.getCapacite();
         // On prend au hasard un des arcs et on change sa capacité
         monArc = g.getarcs().get((int)(Math.random()*taille));
         if (monArc.getCapacite()==0) {
@@ -79,27 +77,35 @@ public class TelecomRecuit extends ModeleRecuit {
             monArc.setCapacite(0);
             suppression=true;
         }
+        this.afficherInfos("mvt : " + monArc.getNoeudOrigine().getNom()
+                            + " -> " + monArc.getNoeudExtremite().getNom()
+                            + " : " + capa
+                            + " devient " + monArc.getCapacite());
     }
 
     public boolean accepterMVT (Graphe g) {
+        Graphe tempGraphe = g.clone();
         // On commence par le calcul du deltaCout et de la probabilité d'acceptation car c'est moins lourd à
         //  calculer que de vérifier que chaque noeud est bien relié au réseau
 
         // on calcule le cout du nouveau graphe
-        deltaCout = calculerCout(monGraphe);
+        deltaCout = calculerCout(tempGraphe) - coutInitial;
         // si deltaCout>0 alors on calcule la probabilité qu'il soit intérressant d'explorer ce système
         if (deltaCout>0) {
-            double exp=Math.exp(-deltaCout/this.getTemperature());
+            //double exp=Math.exp(-deltaCout/(kBoltzman * this.getTemperature()));
+            double exp=Math.exp(-deltaCout/(100));
             double p = Math.random();
             if (p>exp) return false;
         }
 
-        //*** En cas d'ajout de capacité il est inutile de faire les 3 tests suivants ***//
-        // 1) On  cherche à vérifier que chaque Noeud à au moins un arc de capacité!=0
+        //*** En cas d'ajout de capacité il est inutile de faire les tests suivants ***//
+
         if (suppression) {
-            for (Noeud n : g.getnoeuds()) {
+        // 1) On  cherche à vérifier que chaque Noeud à au moins un arc de capacité!=0
+            // Devenu inutile après le test des demandes
+            /*for (Noeud n : g.getnoeuds()) {
                 for (Arc a : g.getarcs()) {
-                    // On regarde si la capacité de l'arc=1 et on regarde si son noeud origine ou extremité correspond au noeud courant
+                    // On regarde si la capacité de l'arc est !=0 et on regarde si son noeud origine ou extremité correspond au noeud courant
                     if (a.getCapacite()!=0 && (a.getNoeudOrigine().equals(n) || a.getNoeudExtremite().equals(n))) {
                         break;
                     }
@@ -123,14 +129,21 @@ public class TelecomRecuit extends ModeleRecuit {
             List<Arc> chemin = Application.getSingleton().TrouverCheminPlusCourt(gJung, n1, n2);
             // Si la liste de retour est vide, c'est que le réseau est coupé en 2 sous réseaux => non valide
             if (chemin.isEmpty()) return false;
-
+            */
         // 3) On vérifie que les demandes sont remplies
+            // On crée un graphe Jung (non orienté)
+            UndirectedSparseMultigraph<Noeud, Arc> gJung = new UndirectedSparseMultigraph<Noeud, Arc>();
+            // On l'alimente pas les arcs de notre graphe
+            for (Arc a : tempGraphe.getarcs()) {
+              gJung.addEdge(a,a.getNoeudOrigine(), a.getNoeudExtremite());
+            }
             // On alimente les noeuds à notre graphe
-            for (Noeud n : Graphe.getSingleton().getnoeuds()) {
+            for (Noeud n : tempGraphe.getnoeuds()) {
               gJung.addVertex(n);
             }
             // On appelle la fonction de vérification des demandes
-            Application.getSingleton().verifierDemandes(gJung);
+
+            if (!Application.getSingleton().verifierDemandes(gJung)) return false;
         }
         //*******************//
 
@@ -139,13 +152,14 @@ public class TelecomRecuit extends ModeleRecuit {
     }
 
     public double calculerCout (Graphe g) {
+        double coutTransformation=0;
         for (Arc a : g.getarcs()) {
             // Si la capacité!=0 alors on ajoute le cout de l'arc
             if (a.getCapacite()!=0) {
-                cout = cout + a.getCapacite();
+                coutTransformation = coutTransformation + a.getCout();
             }
         }
-        return cout;
+        return coutTransformation;
     }
 
     public double deltaCout () {

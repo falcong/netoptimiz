@@ -4,15 +4,6 @@
 
 package netoptimiz;
 
-import netoptimiz.graphe.*;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import org.jdesktop.application.Action;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 
@@ -21,11 +12,19 @@ import org.jdesktop.application.SingleFrameApplication;
  */
 public class NetOptimizApp extends SingleFrameApplication {
 
+    private NetOptimizView vuePrincipale = null;
+
+    public NetOptimizView getView() {
+        return vuePrincipale;
+    }
+
     /**
      * At startup create and show the main frame of the application.
      */
     @Override protected void startup() {
-        show(new NetOptimizView(this));
+        vuePrincipale = new NetOptimizView(this);
+        show(vuePrincipale);
+        //show(new NetOptimizView(this));
     }
 
     /**

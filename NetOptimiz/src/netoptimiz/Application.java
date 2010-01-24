@@ -12,23 +12,23 @@ public class Application {
 
     private static final Application instanceApplication = new Application();
     private Optimisation optimisation;
-    private Graphe graphe;
+    private Graphe grapheOriginal;
 
     public Application() {
         optimisation = null;
-        graphe = Graphe.getSingleton();
+        grapheOriginal = new Graphe();
     }
 
     public static Application getSingleton() {
         return instanceApplication;
     }
 
-    public Graphe getgraphe() {
-        return graphe;
+    public Graphe getgrapheOriginal() {
+        return grapheOriginal;
     }
 
-    public void setgraphe(Graphe val) {
-        this.graphe = val;
+    public void setggrapheOriginal(Graphe val) {
+        this.grapheOriginal = val;
     }
 
     public Optimisation getoptimisation() {
@@ -50,7 +50,7 @@ public class Application {
     }
 
     // Ajouté par rapport aux méthodes définies à l'origine
-    public void verifierDemandes(UndirectedSparseMultigraph<Noeud, Arc> gJung) {
+    public boolean verifierDemandes(UndirectedSparseMultigraph<Noeud, Arc> gJung) {
         // On parcoure les demandes
         for (Demande d : Demande.getdemandes()) {
             // Flag de vérification de demande satisfaite
@@ -73,7 +73,6 @@ public class Application {
                     // On regarde si la capacité suffit à combler la demande
                     // Si oui
                     if ((flux < capaciteBasse)) {
-                        // On supprime les arcs concernés du grapheJung
                         for (Arc aJung : chemin) {
                             // On enlève de la capacité en conséquence sur ces arcs
                             aJung.setCapacite(aJung.getCapacite() - d.getFlux());
@@ -91,9 +90,12 @@ public class Application {
                         }
                     }
                 }
+                // on n'a pas trouvé de chemin pour une demande => non valide
+                else return false;
             }
             while (!flag); // On le fait tant que le flag=false
         }
+        return true;
     }
 
     public List<Arc> TrouverCheminPlusCourt(UndirectedSparseMultigraph<Noeud, Arc> gJung, Noeud n1, Noeud n2) {
