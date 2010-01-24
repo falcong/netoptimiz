@@ -1,41 +1,49 @@
 package netoptimiz.programmelineaire;
 
-import java.util.ArrayList; 
+import java.util.ArrayList;
 
 public class Contrainte {
 
-    private int signe;
+  private int signe;
+  private double secondMembre;
+  private ArrayList<Terme> termes = new ArrayList<Terme>();
 
-    private double secondMembre;
+  public Contrainte() {
+  }
 
-    private ArrayList<Variable> variables;
+  public void addTerme(Terme v) {
+    termes.add(v);
+  }
 
-    public Contrainte () {
-    }
+  public double getsecondMembre() {
+    return secondMembre;
+  }
 
-    public double getsecondMembre () {
-        return secondMembre;
-    }
+  public void setsecondMembre(double val) {
+    this.secondMembre = val;
+  }
 
-    public void setsecondMembre (double val) {
-        this.secondMembre = val;
-    }
+  public int getsigne() {
+    return signe;
+  }
 
-    public int getsigne () {
-        return signe;
-    }
+  /**
+   *
+   * @param val Valeurs possibles (-1, 0, 1) <br/>
+   * -1 signifie inférieur ou égale <br/>
+   *  0 signifie égale <br/>
+   *  1 signifie supérieur ou égale
+   */
+  public void setsigne(int val) {
+    this.signe = val;
+  }
 
-    public void setsigne (int val) {
-        this.signe = val;
-    }
+  public ArrayList<Terme> getTermes() {
+    return termes;
+  }
 
-    public ArrayList<Variable> getvariables () {
-        return variables;
-    }
-
-    public void setvariables (ArrayList<Variable> val) {
-        this.variables = val;
-    }
-
+  public void setTermes(ArrayList<Terme> val) {
+    this.termes = val;
+  }
 }
 
