@@ -25,6 +25,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import netoptimiz.recuit.TelecomRecuit;
 
 /**
  * The application's main frame.
@@ -89,6 +90,7 @@ public class NetOptimizView extends FrameView {
                 }
             }
         });
+        //this.LoadData();
     }
 
     @Action
@@ -146,6 +148,8 @@ public class NetOptimizView extends FrameView {
         jTextField5 = new javax.swing.JTextField();
         jTextField6 = new javax.swing.JTextField();
         jTextField7 = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
@@ -254,6 +258,7 @@ public class NetOptimizView extends FrameView {
         jRadioButton1.setName("jRadioButton1"); // NOI18N
 
         buttonGroup1.add(jRadioButton2);
+        jRadioButton2.setSelected(true);
         jRadioButton2.setText(resourceMap.getString("jRadioButton2.text")); // NOI18N
         jRadioButton2.setActionCommand(resourceMap.getString("jRadioButton2.actionCommand")); // NOI18N
         jRadioButton2.setName("jRadioButton2"); // NOI18N
@@ -321,10 +326,10 @@ public class NetOptimizView extends FrameView {
         jLabel9.setText(resourceMap.getString("jLabel9.text")); // NOI18N
         jLabel9.setName("jLabel9"); // NOI18N
 
-        jSpinner1.setModel(new javax.swing.SpinnerNumberModel());
+        jSpinner1.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(20), null, null, Integer.valueOf(1)));
         jSpinner1.setName("jSpinner1"); // NOI18N
 
-        jSpinner2.setModel(new javax.swing.SpinnerNumberModel());
+        jSpinner2.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(5), null, null, Integer.valueOf(1)));
         jSpinner2.setName("jSpinner2"); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -457,32 +462,45 @@ public class NetOptimizView extends FrameView {
                 .addContainerGap(12, Short.MAX_VALUE))
         );
 
+        jScrollPane1.setName("jScrollPane1"); // NOI18N
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jTextArea1.setName("jTextArea1"); // NOI18N
+        jScrollPane1.setViewportView(jTextArea1);
+        jTextArea1.getAccessibleContext().setAccessibleParent(mainPanel);
+
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(mainPanelLayout.createSequentialGroup()
+                                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(mainPanelLayout.createSequentialGroup()
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(46, Short.MAX_VALUE))
+                        .addGap(34, 34, 34)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 432, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(48, Short.MAX_VALUE))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -503,10 +521,12 @@ public class NetOptimizView extends FrameView {
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(461, 461, 461))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 399, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(39, 39, 39))
         );
 
         mainPanel.getAccessibleContext().setAccessibleName(resourceMap.getString("mainPanel.AccessibleContext.accessibleName")); // NOI18N
@@ -585,6 +605,7 @@ public class NetOptimizView extends FrameView {
         jfc1.showOpenDialog(null);
         if (jfc1.getSelectedFile() != null) {
             File sourcefile = jfc1.getSelectedFile();
+            //File sourcefile = new File("d:\\Documents and Settings\\T0031814\\Bureau\\jeu-de-test\\Net_8.arc");
             this.getFrame().remove(jfc1);
 
             String sourcename = sourcefile.getName().substring(0, sourcefile.getName().lastIndexOf("."));
@@ -594,53 +615,45 @@ public class NetOptimizView extends FrameView {
             File arcfile = new File(sourcepath + ".arc");
             File requestfile = new File(sourcepath + ".dem");
 
-            // verification de présence et d'accessibilité en lecture
-            // des 3 fichiers de données
+            // verification d'intégrité des fichiers à parser
             if ( !nodefile.canRead() ) {
+                //JOptionPane jopError = new JOptionPane();
                 JOptionPane.showMessageDialog(null, "Le fichier de noeuds " + sourcepath + ".nod" +
                         " n'existe pas ou ne peut être lu.\n" +
                         "Le chargement des données a été abdandonné.", "Erreur", JOptionPane.ERROR_MESSAGE);
                 return;
             } else if ( !arcfile.canRead() ) {
+                //JOptionPane jopError = new JOptionPane();
                 JOptionPane.showMessageDialog(null, "Le fichier d'arcs " + sourcepath + ".arc" +
                         " n'existe pas ou ne peut être lu.\n" +
                         "Le chargement des données a été abdandonné.", "Erreur", JOptionPane.ERROR_MESSAGE);
                 return;
             } else if ( !requestfile.canRead() ) {
+                //JOptionPane jopError = new JOptionPane();
                 JOptionPane.showMessageDialog(null, "Le fichier de demandes " + sourcepath + ".dem" +
                         " n'existe pas ou ne peut être lu.\n" +
                         "Le chargement des données a été abdandonné.", "Erreur", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            // Les fichiers sont lus une 1ère fois pour vérification d'intégrité
-            // Si tout s'est bien passé, ils sont lus une 2ème fois pour instancier le graphe
-
-            /*il reste à vérifier :
-            - la capacité identique sur tous les arcs
-            - le rapport entre le nbre de noeuds déclarés et le nbre d'arcs / de demandes
-            - la cohérence du graphe instancié*/
-
             BufferedReader br = null;
             try {
                 String line = null;
                 String[] elem = null;
                 Integer line_number = 1;
-                ArrayList<String> node_names = new ArrayList<String>(); //récupère les noms des noeuds à déclarer
-                                                                        // à la 1ère lecture du fichier de noeuds
+                ArrayList<String> node_names = new ArrayList<String>();
                 boolean declarable_node = false;
                 double test_double_parse;
 
                 //
-                // Vérification d'intégrité des fichiers de données
+                // vérification d'intégrité des fichiers de données
                 //
-                // 1. vérification d'intégrité du fichier de noeuds
+                // 1. noeuds
                 br = new BufferedReader(new FileReader(nodefile));
                 br.readLine();
                 while ((line = br.readLine()) != null) {
                     line_number++ ;
                     elem = line.split("\t");
-                    // nombre de paramètres récupérés sur chaque ligne
                     if (elem.length != 3) {
                         JOptionPane.showMessageDialog(null, "Erreur dans le fichier de noeuds " +
                                 sourcepath + ".nod :\n" +
@@ -649,31 +662,26 @@ public class NetOptimizView extends FrameView {
                                 "Chargement de données", JOptionPane.ERROR_MESSAGE);
                         return;
                     } else node_names.add(elem[0]);
-                    // vérification du format des champs de type double
-                    try {
-                        // abscisse
-                        test_double_parse = Double.parseDouble(elem[1]);
-                        // ordonnée
-                        test_double_parse = Double.parseDouble(elem[2]);
-                    } catch (NumberFormatException e) {
-                        JOptionPane.showMessageDialog(null, "Erreur dans le fichier de noeuds " +
-                                sourcepath + ".nod :\n" +
-                                "* ligne "+ line_number +" : erreur de conversion en type 'double'.\n" +
-                                "Le chargement des données a été abdandonné.",
-                                "Chargement de données", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
+                    //try {
+                    //    test_double_parse = Double.parseDouble(elem[1]);
+                    //    test_double_parse = Double.parseDouble(elem[2]);
+                    //} catch (FormatException e) {
+              /* pb à l'import de com.sun.java.util.jar.pack.Attribute.FormatException */
+                    //    JOptionPane.showMessageDialog(null, "Erreur dans le fichier de noeuds " +
+                    //            sourcepath + ".nod :\n" +
+                    //    " erreur de conversion en type 'double' à la ligne" + line_number, "Erreur", JOptionPane.ERROR_MESSAGE);;
+                    //    return;
+                    //}
                 }
                 br.close();
 
-                // 2. vérification d'intégrité du fichier d'arcs
+                // 2. arcs
                 br = new BufferedReader(new FileReader(arcfile));
                 br.readLine();
                 line_number = 1;
                 while ((line = br.readLine()) != null) {
                     line_number++ ;
                     elem = line.split("\t");
-                    // nombre de paramètres récupérés sur chaque ligne
                     if (elem.length != 4) {
                         JOptionPane.showMessageDialog(null, "Erreur dans le fichier d'arcs " +
                                 sourcepath + ".arc :\n" +
@@ -682,7 +690,6 @@ public class NetOptimizView extends FrameView {
                                 "Chargement de données", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
-                    // existence des noeuds dans le fichier de noeuds
                     // noeud origine
                     declarable_node = false;
                     for (String name : node_names) {
@@ -715,31 +722,16 @@ public class NetOptimizView extends FrameView {
                                 "Chargement de données", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
-                    // vérification du format des champs de type double
-                    try {
-                        // cout
-                        test_double_parse = Double.parseDouble(elem[2]);
-                        // capcacité
-                        test_double_parse = Double.parseDouble(elem[3]);
-                    } catch (NumberFormatException e) {
-                        JOptionPane.showMessageDialog(null, "Erreur dans le fichier d'arcs " +
-                                sourcepath + ".nod :\n" +
-                                "* ligne "+ line_number +" : erreur de conversion en type 'double'.\n" +
-                                "Le chargement des données a été abdandonné.",
-                                "Chargement de données", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
                 }
                 br.close();
 
-                // 3. vérification d'intégrité du fichier de demandes
+                // 3. Demandes
                 br = new BufferedReader(new FileReader(requestfile));
                 br.readLine();
                 line_number = 1;
                 while ((line = br.readLine()) != null) {
                     line_number++ ;
                     elem = line.split("\t");
-                    // nombre de paramètres récupérés sur chaque ligne
                     if (elem.length != 3) {
                         JOptionPane.showMessageDialog(null, "Erreur dans le fichier de demandes " +
                                 sourcepath + ".dem :\n" +
@@ -748,7 +740,6 @@ public class NetOptimizView extends FrameView {
                                 "Chargement de données", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
-                    // existence des noeuds dans le fichier de noeuds
                     // noeud origine
                     declarable_node = false;
                     for (String name : node_names) {
@@ -777,18 +768,6 @@ public class NetOptimizView extends FrameView {
                         JOptionPane.showMessageDialog(null, "Erreur dans le fichier de demandes " +
                                 sourcepath + ".dem :\n" +
                                 "* ligne "+ line_number +" : le noeud "+ elem[1] +" n'existe pas dans le fichier de noeuds.\n" +
-                                "Le chargement des données a été abdandonné.",
-                                "Chargement de données", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                    // vérification du format des champs de type double
-                    try {
-                        // flux
-                        test_double_parse = Double.parseDouble(elem[2]);
-                    } catch (NumberFormatException e) {
-                        JOptionPane.showMessageDialog(null, "Erreur dans le fichier de demandes " +
-                                sourcepath + ".nod :\n" +
-                                "* ligne "+ line_number +" : erreur de conversion en type 'double'.\n" +
                                 "Le chargement des données a été abdandonné.",
                                 "Chargement de données", JOptionPane.ERROR_MESSAGE);
                         return;
@@ -804,7 +783,7 @@ public class NetOptimizView extends FrameView {
                 this.jTextField1.setText(sourcepath + ".*");
 
                 // Réinitialisation des données précédement chargées
-                Graphe.getSingleton().reset();
+                Application.getSingleton().getgrapheOriginal().reset();
                 Noeud.getnoeuds().clear();
                 Arc.getarcs().clear();
                 Demande.getdemandes().clear();
@@ -844,31 +823,45 @@ public class NetOptimizView extends FrameView {
                 Demande.displayDemandes();
 
                 // Implémentation dans le graphe
-                Graphe.getSingleton().getnoeuds().addAll(Noeud.getnoeuds());
-                Graphe.getSingleton().getarcs().addAll(Arc.getarcs());
-                Graphe.getSingleton().getdemandes().addAll(Demande.getdemandes());
+                Application.getSingleton().getgrapheOriginal().getnoeuds().addAll(Noeud.getnoeuds());
+                Application.getSingleton().getgrapheOriginal().getarcs().addAll(Arc.getarcs());
+                Application.getSingleton().getgrapheOriginal().getdemandes().addAll(Demande.getdemandes());
                 JOptionPane.showMessageDialog(null, "Importation des données réussie !",
                                 "Chargement de données", JOptionPane.INFORMATION_MESSAGE);
-                System.out.println(Graphe.getSingleton().toString());
+                System.out.println(Application.getSingleton().getgrapheOriginal().toString());
 
             } catch (IOException x) {
-                JOptionPane.showMessageDialog(null, x.getMessage(),
-                                "I/O Error", JOptionPane.ERROR_MESSAGE);
+                System.err.println(x);
             }
         }
     }
 
     @Action
     public void solve() {
-        //String methode_de_resolution  = this.buttonGroup1.getSelection().getActionCommand();
-        //if (methode_de_resolution.equals("cplex")) {
+        this.refresh(" ");
+        String methode_de_resolution  = this.buttonGroup1.getSelection().getActionCommand();
+        if (methode_de_resolution.equals("cplex")) {
 
-        //}else if (methode_de_resolution.equals("recuit")) {
-        //    Telecomrecuit.resoudre(this.jSpinner1.getModel().getValue().toString(),
-        //            this.jSpinner2.getModel().getValue().toString());
-        //}else if (methode_de_resolution.equals("vns")) {
+        }else if (methode_de_resolution.equals("recuit")) {
+        //JOptionPane.showMessageDialog(null,
+        //        methode_de_resolution + " " + this.jSpinner1.getModel().getValue().toString()
+        //        + " " + this.jSpinner2.getModel().getValue().toString(),
+        //        "Chargement de données", JOptionPane.INFORMATION_MESSAGE);
+        this.refresh(methode_de_resolution + " " + this.jSpinner1.getModel().getValue().toString()
+        + " " + this.jSpinner2.getModel().getValue().toString());
+        TelecomRecuit tr = new TelecomRecuit();
+        double soluce = tr.resoudre(Integer.parseInt(this.jSpinner1.getModel().getValue().toString()),
+        Integer.parseInt(this.jSpinner2.getModel().getValue().toString()));
 
-        //}
+        this.refresh("solution : " + soluce);
+        this.refresh("arcs : " + Application.getSingleton().getgrapheOriginal().getarcs().size());
+        }else if (methode_de_resolution.equals("vns")) {
+
+        }
+    }
+
+    public void refresh(String s) {
+        this.jTextArea1.setText( this.jTextArea1.getText() + "\n" + s);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -894,10 +887,12 @@ public class NetOptimizView extends FrameView {
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JRadioButton jRadioButton3;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSpinner jSpinner1;
     private javax.swing.JSpinner jSpinner2;
     private javax.swing.JSpinner jSpinner3;
     private javax.swing.JSpinner jSpinner4;
+    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField10;
     private javax.swing.JTextField jTextField2;

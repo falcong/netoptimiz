@@ -10,9 +10,6 @@ public class TelecomVNS extends ModeleVNS {
     private double deltacout;
     private Arc monArc;
 
-    public TelecomVNS () {
-    }
-
   public void faireMvt (Graphe g) {
         // On récupère le nombre d'arcs du graphe
         int taille=g.getarcs().size();
@@ -24,23 +21,30 @@ public class TelecomVNS extends ModeleVNS {
 
 
     public void resoudre () {
-         monGraphe=Application.getSingleton().getgraphe();
+         monGraphe = Application.getSingleton().getgrapheOriginal().clone();
          coutInitial=calculerCout(monGraphe);
          int i=0;
     for(int n=0;n<this.getIterationsInternes();n++)
     {
-          faireMvt (monGraphe);
+        boolean systemFige;
+        faireMvt (monGraphe);
+        //on initialise le booleen de controle a true en début de chaque boucle
+            systemFige = true;
             // On vérifie que la transformation est valide
             // Si ce n'est pas le cas on revient en arrière et on refait un mvt
             while (accepterMVT(monGraphe)==false && i<this.getKmax()) {
                 if (monArc.getCapacite()==0) 
                 {
+                    // Si on as trouvé une transformation valide on passe systemFige à false
                     monArc.setCapacite(1);
+                    systemFige = false;
                     i++;
                 }
                 else monArc.setCapacite(0);
                 faireMvt (monGraphe);
             }
+        // Si aucune transformation valide n'est trouvée, le système est considéré comme figé on peut sortir de la boucle
+        if(systemFige == true) break;
 
     }
     }

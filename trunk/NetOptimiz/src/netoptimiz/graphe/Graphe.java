@@ -4,13 +4,19 @@ import java.util.ArrayList;
 
 public class Graphe {
 
-    private static final Graphe instanceGraphe = new Graphe();
+    private ArrayList<Noeud> noeuds;
 
-    public static Graphe getSingleton() {
-        return instanceGraphe;
+    public void setArcs(ArrayList<Arc> arcs) {
+        this.arcs = arcs;
     }
 
-    private ArrayList<Noeud> noeuds;
+    public void setDemandes(ArrayList<Demande> demandes) {
+        this.demandes = demandes;
+    }
+
+    public void setNoeuds(ArrayList<Noeud> noeuds) {
+        this.noeuds = noeuds;
+    }
 
     private ArrayList<Arc> arcs;
 
@@ -26,6 +32,16 @@ public class Graphe {
         this.noeuds.clear();
         this.arcs.clear();
         this.demandes.clear();
+    }
+
+    public Graphe clone() {
+        Graphe newGraphe = new Graphe();
+        newGraphe.getnoeuds().addAll(this.noeuds);
+        for (Arc a : this.arcs) {
+            newGraphe.getarcs().add(new Arc(a.getNoeudOrigine(),a.getNoeudExtremite(),a.getCout(),a.getCapacite()));
+        }
+        newGraphe.getdemandes().addAll(this.getdemandes());
+        return newGraphe;
     }
 
     public ArrayList<Noeud> getnoeuds () {

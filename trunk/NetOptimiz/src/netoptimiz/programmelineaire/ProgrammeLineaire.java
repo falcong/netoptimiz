@@ -22,7 +22,7 @@ public class ProgrammeLineaire {
   }
 
   public double resoudre() {
-    Graphe graphe = Application.getSingleton().getgraphe();
+    Graphe graphe = Application.getSingleton().getgrapheOriginal().clone();
     if (graphe.getnoeuds().isEmpty()) {
       System.err.println("Le graphe n'est pas encore intitalisé");
     } else {
