@@ -859,13 +859,11 @@ public class NetOptimizView extends FrameView {
       //        methode_de_resolution + " " + this.jSpinner1.getModel().getValue().toString()
       //        + " " + this.jSpinner2.getModel().getValue().toString(),
       //        "Chargement de données", JOptionPane.INFORMATION_MESSAGE);
-      this.refresh(methode_de_resolution + " " + this.jSpinner1.getModel().getValue().toString() + " " + this.jSpinner2.getModel().getValue().toString());
+      this.refresh(methode_de_resolution + "=> Paliers:" + this.jSpinner1.getModel().getValue().toString() + " Itérations:" + this.jSpinner2.getModel().getValue().toString());
       TelecomRecuit tr = new TelecomRecuit();
       double soluce = tr.resoudre(Integer.parseInt(this.jSpinner1.getModel().getValue().toString()),
               Integer.parseInt(this.jSpinner2.getModel().getValue().toString()));
-
-      this.refresh("solution : " + soluce);
-      this.refresh("arcs : " + Application.getSingleton().getgrapheOriginal().getarcs().size());
+      this.refresh("Solution = " + soluce);
     } else if (methode_de_resolution.equals("vns")) {
     }
   }
