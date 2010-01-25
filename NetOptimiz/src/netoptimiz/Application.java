@@ -63,7 +63,9 @@ public class Application {
                 List<Arc> chemin = this.TrouverCheminPlusCourt(gJung, d.getNoeudOrigine(), d.getNoeudExtremite());
                 // Si le chemin est possible
                 if (!chemin.isEmpty()) {
+                    // On initialise la capacité basse par le premier arc trouvé
                     double capaciteBasse = chemin.get(0).getCapacite();
+                    //System.out.print("CapaBasse premier arc:" + chemin.get(0).getCapacite() + " " + chemin.get(0).getNoeudOrigine().getNom() +" "+chemin.get(0).getNoeudExtremite().getNom()+"\n");
                     for (Arc aJung : chemin) {
                         // On récupère le minimun des capacités du chemin
                         if (aJung.getCapacite() < capaciteBasse) {
@@ -72,7 +74,7 @@ public class Application {
                     }
                     // On regarde si la capacité suffit à combler la demande
                     // Si oui
-                    if ((flux < capaciteBasse)) {
+                    if ((flux <= capaciteBasse)) {
                         for (Arc aJung : chemin) {
                             // On enlève de la capacité en conséquence sur ces arcs
                             aJung.setCapacite(aJung.getCapacite() - d.getFlux());
@@ -86,7 +88,9 @@ public class Application {
                         for (Arc aJung : chemin) {
                             aJung.setCapacite(aJung.getCapacite() - d.getFlux());
                             // Si la capacité est négative ou égale à 0 alors on supprime l'arc
-                            if (aJung.getCapacite()<=0) gJung.removeEdge(aJung);
+                            if (aJung.getCapacite()<=0) {
+                                gJung.removeEdge(aJung);
+                            }
                         }
                     }
                 }
