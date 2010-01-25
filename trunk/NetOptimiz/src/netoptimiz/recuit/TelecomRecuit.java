@@ -24,8 +24,13 @@ public class TelecomRecuit extends ModeleRecuit {
         monGraphe = Application.getSingleton().getgrapheOriginal().clone();
     }
 
-    public void afficherInfos(String s) {
-        NetOptimizApp.getApplication().getView().refresh(s);
+    public void afficherInfos(String type,String s) {
+        // options d'affichage :
+        // console
+        // principal
+        // température
+        // itérations
+        NetOptimizApp.getApplication().getView().refresh(type,s);
     }
 
     public double resoudre (int nombrePalliers, int iterationsInternes) {
@@ -40,7 +45,7 @@ public class TelecomRecuit extends ModeleRecuit {
         // Calcule et affecte la température initiale
         //setTemperature(10);
         tempInitiale(monGraphe);
-        this.afficherInfos("Température initiale = " + this.getTemperature());
+        this.afficherInfos("principal","Température initiale = " + this.getTemperature());
 
         // On déroule l'algo tant que l'état gelé n'est pas atteint (nombre de paliers atteint)
         for (int nbPalliers = 1; nbPalliers <= this.getNombrePalliers(); nbPalliers++) {
@@ -66,7 +71,7 @@ public class TelecomRecuit extends ModeleRecuit {
         for (Arc a : monGraphe.getarcs()) {
             if (a.getCapacite()>0) nbArcsSolution++;
         }
-        this.afficherInfos("Nombre d'arcs = " + nbArcsSolution);
+        this.afficherInfos("principal","Nombre d'arcs = " + nbArcsSolution);
         // On retourne la soultion
         return calculerCout(monGraphe);
     }
