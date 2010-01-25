@@ -46,33 +46,9 @@ public abstract class ModeleRecuit {
         this.nombrePalliers = val;
     }
 
-    // Clacul de la température initiale selon Kirkpatrick
-    public double tempInitiale (Graphe g) {
-        Graphe tempGrapheTinit = g.clone();
-        double pi=0;
-        // Définition d'une température de départ (faible)
-        double tempInit=100;
-        do {
-            // On défini le nombre de transformation couteuse à évaluer
-            double nbTransCouteuses=tempGrapheTinit.getarcs().size()*2;
-            // Afin de compter le nombre de transformations couteuses engendrées
-            int nbEngendre=0;
-            do {
-                faireMvt(tempGrapheTinit);
-                accepterMVT(tempGrapheTinit);
-                
-            }
-            while (nbEngendre==20); // On a déterminé que l'on s'arrétait à ce nombre de transformations couteuses
-
-            // Dans le cas où le while serait vérifié
-            tempInit=tempInit*2;
-        }
-        while (pi<0.75); // objectif à atteindre : pi doit être au moin égale à 075
-
-        return tempInit;
-    }
-
     public abstract double resoudre (int nombrePalliers, int iterationsInternes);
+
+    public abstract void tempInitiale (Graphe g);
 
     public abstract void faireMvt (Graphe g);
 
@@ -80,7 +56,7 @@ public abstract class ModeleRecuit {
 
     public abstract double calculerCout (Graphe g);
 
-    public abstract double deltaCout ();
+    public abstract double deltaCout (Graphe g);
 
     public abstract void refuserMvt ();
 
