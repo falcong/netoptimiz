@@ -908,7 +908,7 @@ public class NetOptimizView extends FrameView {
         TelecomVNS tvns = new TelecomVNS();
         double soluce = tvns.resoudre(Integer.parseInt(this.jSpinner3.getModel().getValue().toString()),
                 Integer.parseInt(this.jSpinner4.getModel().getValue().toString()));
-        this.refresh("solution_recuit", String.valueOf(soluce));
+        this.refresh("solution_vns", String.valueOf(soluce));
     }
   }
 
@@ -923,8 +923,12 @@ public class NetOptimizView extends FrameView {
             this.jTextField6.setText(s);
         }else if ( type.equals("itérations")) {
             this.jTextField7.setText(s);
+        }else if ( type.equals("solution_cplex")) {
+            this.jTextField8.setText(s);
         }else if ( type.equals("solution_recuit")) {
             this.jTextField9.setText(s);
+        }else if ( type.equals("solution_vns")) {
+            this.jTextField10.setText(s);
         }
   }
 
