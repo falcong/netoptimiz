@@ -846,30 +846,41 @@ public class NetOptimizView extends FrameView {
 
   @Action
   public void solve() {
-    this.refresh(" ");
+    this.refresh("principal"," ");
     String methode_de_resolution = this.buttonGroup1.getSelection().getActionCommand();
     if (methode_de_resolution.equals("cplex")) {
       try {
         (new ProgrammeLineaire()).resoudre();
       } catch (IloException ex) {
-        this.refresh("Cplex problem : " + ex.getMessage());
+        this.refresh("principal","Cplex problem : " + ex.getMessage());
       }
     } else if (methode_de_resolution.equals("recuit")) {
       //JOptionPane.showMessageDialog(null,
       //        methode_de_resolution + " " + this.jSpinner1.getModel().getValue().toString()
       //        + " " + this.jSpinner2.getModel().getValue().toString(),
       //        "Chargement de données", JOptionPane.INFORMATION_MESSAGE);
-      this.refresh(methode_de_resolution + "=> Paliers:" + this.jSpinner1.getModel().getValue().toString() + " Itérations:" + this.jSpinner2.getModel().getValue().toString());
+      this.refresh("principal",methode_de_resolution + "=> Paliers:" + this.jSpinner1.getModel().getValue().toString() + " Itérations:" + this.jSpinner2.getModel().getValue().toString());
       TelecomRecuit tr = new TelecomRecuit();
       double soluce = tr.resoudre(Integer.parseInt(this.jSpinner1.getModel().getValue().toString()),
               Integer.parseInt(this.jSpinner2.getModel().getValue().toString()));
-      this.refresh("Solution = " + soluce);
+      this.refresh("principal","Solution = " + soluce);
     } else if (methode_de_resolution.equals("vns")) {
     }
   }
 
-  public void refresh(String s) {
-    this.jTextArea1.setText(this.jTextArea1.getText() + "\n" + s);
+  public void refresh(String type,String s) {
+      if ( type.equals("console")) {
+            System.out.println(s);
+        }else if ( type.equals("principal")) {
+            this.jTextArea1.setText(this.jTextArea1.getText() + "\n" + s);
+        }else if ( type.equals("température")) {
+            this.jTextField5.setText(s);
+        }else if ( type.equals("k")) {
+            this.jTextField6.setText(s);
+        }else if ( type.equals("itérations")) {
+            this.jTextField7.setText(s);
+        }
+    
   }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
