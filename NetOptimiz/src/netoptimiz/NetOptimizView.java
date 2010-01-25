@@ -855,16 +855,13 @@ public class NetOptimizView extends FrameView {
         this.refresh("principal","Cplex problem : " + ex.getMessage());
       }
     } else if (methode_de_resolution.equals("recuit")) {
-      //JOptionPane.showMessageDialog(null,
-      //        methode_de_resolution + " " + this.jSpinner1.getModel().getValue().toString()
-      //        + " " + this.jSpinner2.getModel().getValue().toString(),
-      //        "Chargement de données", JOptionPane.INFORMATION_MESSAGE);
       this.refresh("principal",methode_de_resolution + "=> Paliers:" + this.jSpinner1.getModel().getValue().toString() + " Itérations:" + this.jSpinner2.getModel().getValue().toString());
       TelecomRecuit tr = new TelecomRecuit();
       double soluce = tr.resoudre(Integer.parseInt(this.jSpinner1.getModel().getValue().toString()),
               Integer.parseInt(this.jSpinner2.getModel().getValue().toString()));
-      this.refresh("principal","Solution = " + soluce);
+      this.refresh("solution_recuit",String.valueOf(soluce));
     } else if (methode_de_resolution.equals("vns")) {
+        
     }
   }
 
@@ -879,8 +876,9 @@ public class NetOptimizView extends FrameView {
             this.jTextField6.setText(s);
         }else if ( type.equals("itérations")) {
             this.jTextField7.setText(s);
+        }else if ( type.equals("solution_recuit")) {
+            this.jTextField9.setText(s);
         }
-    
   }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
