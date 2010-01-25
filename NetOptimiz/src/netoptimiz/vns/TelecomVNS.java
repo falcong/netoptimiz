@@ -20,7 +20,7 @@ public class TelecomVNS extends ModeleVNS {
     }
 
 
-    public void resoudre () {
+    public double resoudre (int nombrePalliers, int iterationsInternes) {
          monGraphe = Application.getSingleton().getgrapheOriginal().clone();
          coutInitial=calculerCout(monGraphe);
          int i=0;
@@ -47,6 +47,7 @@ public class TelecomVNS extends ModeleVNS {
         if(systemFige == true) break;
 
     }
+         return calculerCout(monGraphe);
     }
 public double calculerCout (Graphe g) {
     for (Arc a : g.getarcs()) {
