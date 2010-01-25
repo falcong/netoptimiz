@@ -36,7 +36,7 @@ public abstract class ModeleVNS {
         this.kmax = val;
     }
 
-    public abstract void resoudre ();
+    public abstract double resoudre (int nombrePalliers, int iterationsInternes);
      /*   double coutMvt;
         bestVns.faireMvt();
         for(int i=0;i<kmax;i++)

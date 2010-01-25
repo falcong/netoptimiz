@@ -4,8 +4,6 @@
 package netoptimiz;
 
 import ilog.concert.IloException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import netoptimiz.graphe.*;
 
 import org.jdesktop.application.Action;
@@ -29,6 +27,7 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import netoptimiz.programmelineaire.ProgrammeLineaire;
 import netoptimiz.recuit.TelecomRecuit;
+import netoptimiz.vns.TelecomVNS;
 
 /**
  * The application's main frame.
@@ -376,8 +375,10 @@ public class NetOptimizView extends FrameView {
         jLabel11.setText(resourceMap.getString("jLabel11.text")); // NOI18N
         jLabel11.setName("jLabel11"); // NOI18N
 
+        jSpinner3.setModel(new javax.swing.SpinnerNumberModel());
         jSpinner3.setName("jSpinner3"); // NOI18N
 
+        jSpinner4.setModel(new javax.swing.SpinnerNumberModel());
         jSpinner4.setName("jSpinner4"); // NOI18N
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -603,246 +604,289 @@ public class NetOptimizView extends FrameView {
 
   @Action
   public void LoadData() {
-    JFileChooser jfc1 = new JFileChooser();
-    FileNameExtensionFilter filter = new FileNameExtensionFilter(
-            "Fichiers de Noeuds, d'Arcs ou de Demandes", "nod", "arc", "dem");
-    jfc1.setFileFilter(filter);
-    this.getFrame().add(jfc1);
-    jfc1.showOpenDialog(null);
-    if (jfc1.getSelectedFile() != null) {
-      File sourcefile = jfc1.getSelectedFile();
-      //File sourcefile = new File("d:\\Documents and Settings\\T0031814\\Bureau\\jeu-de-test\\Net_8.arc");
-      this.getFrame().remove(jfc1);
+        JFileChooser jfc1 = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                "Fichiers de Noeuds, d'Arcs ou de Demandes", "nod", "arc", "dem");
+        jfc1.setFileFilter(filter);
+        this.getFrame().add(jfc1);
+        jfc1.showOpenDialog(null);
+        if (jfc1.getSelectedFile() != null) {
+            File sourcefile = jfc1.getSelectedFile();
+            //File sourcefile = new File("d:\\Documents and Settings\\T0031814\\Bureau\\jeu-de-test\\Net_8.arc");
+            this.getFrame().remove(jfc1);
 
-      String sourcename = sourcefile.getName().substring(0, sourcefile.getName().lastIndexOf("."));
-      String sourcepath = sourcefile.getParent() + "\\" + sourcename;
+            String sourcename = sourcefile.getName().substring(0, sourcefile.getName().lastIndexOf("."));
+            String sourcepath = sourcefile.getParent() + "\\" + sourcename;
 
-      File nodefile = new File(sourcepath + ".nod");
-      File arcfile = new File(sourcepath + ".arc");
-      File requestfile = new File(sourcepath + ".dem");
+            File nodefile = new File(sourcepath + ".nod");
+            File arcfile = new File(sourcepath + ".arc");
+            File requestfile = new File(sourcepath + ".dem");
 
-      // verification d'intégrité des fichiers à parser
-      if (!nodefile.canRead()) {
-        //JOptionPane jopError = new JOptionPane();
-        JOptionPane.showMessageDialog(null, "Le fichier de noeuds " + sourcepath + ".nod" +
-                " n'existe pas ou ne peut être lu.\n" +
-                "Le chargement des données a été abdandonné.", "Erreur", JOptionPane.ERROR_MESSAGE);
-        return;
-      } else if (!arcfile.canRead()) {
-        //JOptionPane jopError = new JOptionPane();
-        JOptionPane.showMessageDialog(null, "Le fichier d'arcs " + sourcepath + ".arc" +
-                " n'existe pas ou ne peut être lu.\n" +
-                "Le chargement des données a été abdandonné.", "Erreur", JOptionPane.ERROR_MESSAGE);
-        return;
-      } else if (!requestfile.canRead()) {
-        //JOptionPane jopError = new JOptionPane();
-        JOptionPane.showMessageDialog(null, "Le fichier de demandes " + sourcepath + ".dem" +
-                " n'existe pas ou ne peut être lu.\n" +
-                "Le chargement des données a été abdandonné.", "Erreur", JOptionPane.ERROR_MESSAGE);
-        return;
-      }
-
-      BufferedReader br = null;
-      try {
-        String line = null;
-        String[] elem = null;
-        Integer line_number = 1;
-        ArrayList<String> node_names = new ArrayList<String>();
-        boolean declarable_node = false;
-        double test_double_parse;
-
-        //
-        // vérification d'intégrité des fichiers de données
-        //
-        // 1. noeuds
-        br = new BufferedReader(new FileReader(nodefile));
-        br.readLine();
-        while ((line = br.readLine()) != null) {
-          line_number++;
-          elem = line.split("\t");
-          if (elem.length != 3) {
-            JOptionPane.showMessageDialog(null, "Erreur dans le fichier de noeuds " +
-                    sourcepath + ".nod :\n" +
-                    "* ligne " + line_number + " : nombre d'arguments incorrect.\n" +
-                    "Le chargement des données a été abdandonné.",
-                    "Chargement de données", JOptionPane.ERROR_MESSAGE);
-            return;
-          } else {
-            node_names.add(elem[0]);
-          }
-        //try {
-        //    test_double_parse = Double.parseDouble(elem[1]);
-        //    test_double_parse = Double.parseDouble(elem[2]);
-        //} catch (FormatException e) {
-              /* pb à l'import de com.sun.java.util.jar.pack.Attribute.FormatException */
-        //    JOptionPane.showMessageDialog(null, "Erreur dans le fichier de noeuds " +
-        //            sourcepath + ".nod :\n" +
-        //    " erreur de conversion en type 'double' à la ligne" + line_number, "Erreur", JOptionPane.ERROR_MESSAGE);;
-        //    return;
-        //}
-        }
-        br.close();
-
-        // 2. arcs
-        br = new BufferedReader(new FileReader(arcfile));
-        br.readLine();
-        line_number = 1;
-        while ((line = br.readLine()) != null) {
-          line_number++;
-          elem = line.split("\t");
-          if (elem.length != 4) {
-            JOptionPane.showMessageDialog(null, "Erreur dans le fichier d'arcs " +
-                    sourcepath + ".arc :\n" +
-                    "* ligne " + line_number + " : nombre d'arguments incorrect.\n" +
-                    "Le chargement des données a été abdandonné.",
-                    "Chargement de données", JOptionPane.ERROR_MESSAGE);
-            return;
-          }
-          // noeud origine
-          declarable_node = false;
-          for (String name : node_names) {
-            if (elem[0].equals(name)) {
-              declarable_node = true;
+            // verification de présence et d'accessibilité en lecture
+            // des 3 fichiers de données
+            if (!nodefile.canRead()) {
+                JOptionPane.showMessageDialog(null, "Le fichier de noeuds " + sourcepath + ".nod" +
+                        " n'existe pas ou ne peut être lu.\n" +
+                        "Le chargement des données a été abdandonné.",
+                        "Chargement de données", JOptionPane.ERROR_MESSAGE);
+                return;
+            } else if (!arcfile.canRead()) {
+                JOptionPane.showMessageDialog(null, "Le fichier d'arcs " + sourcepath + ".arc" +
+                        " n'existe pas ou ne peut être lu.\n" +
+                        "Le chargement des données a été abdandonné.",
+                        "Chargement de données", JOptionPane.ERROR_MESSAGE);
+                return;
+            } else if (!requestfile.canRead()) {
+                JOptionPane.showMessageDialog(null, "Le fichier de demandes " + sourcepath + ".dem" +
+                        " n'existe pas ou ne peut être lu.\n" +
+                        "Le chargement des données a été abdandonné.",
+                        "Chargement de données", JOptionPane.ERROR_MESSAGE);
+                return;
             }
-          }
-          if (!declarable_node) {
-            node_names.clear();
-            JOptionPane.showMessageDialog(null, "Erreur dans le fichier d'arcs " +
-                    sourcepath + ".arc :\n" +
-                    "* ligne " + line_number + " : le noeud " + elem[0] + " n'existe pas dans le fichier de noeuds.\n" +
-                    "Le chargement des données a été abdandonné.",
-                    "Chargement de données", JOptionPane.ERROR_MESSAGE);
-            return;
-          }
-          // noeud extremité
-          declarable_node = false;
-          for (String name : node_names) {
-            if (elem[1].equals(name)) {
-              declarable_node = true;
+
+            // Les fichiers sont lus une 1ère fois pour vérification d'intégrité
+            // Si tout s'est bien passé, ils sont lus une 2ème fois pour instancier le graphe
+
+            /*il reste à vérifier :
+            - la capacité identique sur tous les arcs
+            - le rapport entre le nbre de noeuds déclarés et le nbre d'arcs / de demandes
+            - la cohérence du graphe instancié*/
+
+            BufferedReader br = null;
+            try {
+                String line = null;
+                String[] elem = null;
+                Integer line_number = 1;
+                ArrayList<String> node_names = new ArrayList<String>(); //récupère les noms des noeuds à déclarer
+                                                                        // à la 1ère lecture du fichier de noeuds
+                boolean declarable_node = false;
+                double test_double_parse;
+
+                //
+                // vérification d'intégrité des fichiers de données
+                //
+                // 1. noeuds
+                br = new BufferedReader(new FileReader(nodefile));
+                br.readLine();
+                while ((line = br.readLine()) != null) {
+                    line_number++;
+                    elem = line.split("\t");
+                    // nombre de paramètres récupérés sur chaque ligne
+                    if (elem.length != 3) {
+                        JOptionPane.showMessageDialog(null, "Erreur dans le fichier de noeuds " +
+                                sourcepath + ".nod :\n" +
+                                "* ligne " + line_number + " : nombre d'arguments incorrect.\n" +
+                                "Le chargement des données a été abdandonné.",
+                                "Chargement de données", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    } else node_names.add(elem[0]);
+                    // vérification du format des champs de type double
+                    try {
+                        // abscisse
+                        test_double_parse = Double.parseDouble(elem[1]);
+                        // ordonnée
+                        test_double_parse = Double.parseDouble(elem[2]);
+                    } catch (NumberFormatException e) {
+                        JOptionPane.showMessageDialog(null, "Erreur dans le fichier de noeuds " +
+                                sourcepath + ".nod :\n" +
+                                "* ligne "+ line_number +" : erreur de conversion en type 'double'.\n" +
+                                "Le chargement des données a été abdandonné.",
+                                "Chargement de données", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
+                br.close();
+
+                // 2. vérification d'intégrité du fichier d'arcs
+                br = new BufferedReader(new FileReader(arcfile));
+                br.readLine();
+                line_number = 1;
+                while ((line = br.readLine()) != null) {
+                    line_number++;
+                    elem = line.split("\t");
+                    // nombre de paramètres récupérés sur chaque ligne
+                    if (elem.length != 4) {
+                        JOptionPane.showMessageDialog(null, "Erreur dans le fichier d'arcs " +
+                                sourcepath + ".arc :\n" +
+                                "* ligne " + line_number + " : nombre d'arguments incorrect.\n" +
+                                "Le chargement des données a été abdandonné.",
+                                "Chargement de données", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    // existence des noeuds dans le fichier de noeuds
+                    // noeud origine
+                    declarable_node = false;
+                    for (String name : node_names) {
+                        if (elem[0].equals(name)) {
+                            declarable_node = true;
+                        }
+                    }
+                    if (!declarable_node) {
+                        node_names.clear();
+                        JOptionPane.showMessageDialog(null, "Erreur dans le fichier d'arcs " +
+                                sourcepath + ".arc :\n" +
+                                "* ligne " + line_number + " : le noeud " + elem[0] + " n'existe pas dans le fichier de noeuds.\n" +
+                                "Le chargement des données a été abdandonné.",
+                                "Chargement de données", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    // noeud extremité
+                    declarable_node = false;
+                    for (String name : node_names) {
+                        if (elem[1].equals(name)) {
+                            declarable_node = true;
+                        }
+                    }
+                    if (!declarable_node) {
+                        node_names.clear();
+                        JOptionPane.showMessageDialog(null, "Erreur dans le fichier d'arcs " +
+                                sourcepath + ".arc :\n" +
+                                "* ligne " + line_number + " : le noeud " + elem[1] + " n'existe pas dans le fichier de noeuds.\n" +
+                                "Le chargement des données a été abdandonné.",
+                                "Chargement de données", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    // vérification du format des champs de type double
+                    try {
+                        // cout
+                        test_double_parse = Double.parseDouble(elem[2]);
+                        // capcacité
+                        test_double_parse = Double.parseDouble(elem[3]);
+                    } catch (NumberFormatException e) {
+                        JOptionPane.showMessageDialog(null, "Erreur dans le fichier d'arcs " +
+                                sourcepath + ".nod :\n" +
+                                "* ligne "+ line_number +" : erreur de conversion en type 'double'.\n" +
+                                "Le chargement des données a été abdandonné.",
+                                "Chargement de données", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
+                br.close();
+
+                // 3. vérification d'intégrité du fichier de demandes
+                br = new BufferedReader(new FileReader(requestfile));
+                br.readLine();
+                line_number = 1;
+                while ((line = br.readLine()) != null) {
+                    line_number++;
+                    elem = line.split("\t");
+                    // nombre de paramètres récupérés sur chaque ligne
+                    if (elem.length != 3) {
+                        JOptionPane.showMessageDialog(null, "Erreur dans le fichier de demandes " +
+                                sourcepath + ".dem :\n" +
+                                "* ligne " + line_number + " : nombre d'arguments incorrect.\n" +
+                                "Le chargement des données a été abdandonné.",
+                                "Chargement de données", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    // existence des noeuds dans le fichier de noeuds
+                    // noeud origine
+                    declarable_node = false;
+                    for (String name : node_names) {
+                        if (elem[0].equals(name)) {
+                            declarable_node = true;
+                        }
+                    }
+                    if (!declarable_node) {
+                        node_names.clear();
+                        JOptionPane.showMessageDialog(null, "Erreur dans le fichier de demandes " +
+                                sourcepath + ".dem :\n" +
+                                "* ligne " + line_number + " : le noeud " + elem[0] + " n'existe pas dans le fichier de noeuds.\n" +
+                                "Le chargement des données a été abdandonné.",
+                                "Chargement de données", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    // noeud extremité
+                    declarable_node = false;
+                    for (String name : node_names) {
+                        if (elem[1].equals(name)) {
+                            declarable_node = true;
+                        }
+                    }
+                    if (!declarable_node) {
+                        node_names.clear();
+                        JOptionPane.showMessageDialog(null, "Erreur dans le fichier de demandes " +
+                                sourcepath + ".dem :\n" +
+                                "* ligne " + line_number + " : le noeud " + elem[1] + " n'existe pas dans le fichier de noeuds.\n" +
+                                "Le chargement des données a été abdandonné.",
+                                "Chargement de données", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    // vérification du format des champs de type double
+                    try {
+                        // flux
+                        test_double_parse = Double.parseDouble(elem[2]);
+                    } catch (NumberFormatException e) {
+                        JOptionPane.showMessageDialog(null, "Erreur dans le fichier de demandes " +
+                                sourcepath + ".nod :\n" +
+                                "* ligne "+ line_number +" : erreur de conversion en type 'double'.\n" +
+                                "Le chargement des données a été abdandonné.",
+                                "Chargement de données", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
+                br.close();
+                node_names.clear();
+
+                //
+                // Initialisation des objets depuis les données des fichiers
+                //
+
+                this.jTextField1.setText(sourcepath + ".*");
+
+                // Réinitialisation des données précédement chargées
+                Application.getSingleton().getgrapheOriginal().reset();
+                Noeud.getnoeuds().clear();
+                Arc.getarcs().clear();
+                Demande.getdemandes().clear();
+
+                // Chargement des noeuds
+                br = new BufferedReader(new FileReader(nodefile));
+                br.readLine();
+                while ((line = br.readLine()) != null) {
+                    elem = line.split("\t");
+                    new Noeud(elem[0], Double.parseDouble(elem[1]), Double.parseDouble(elem[2]));
+                }
+                br.close();
+                this.jTextField2.setText(String.valueOf(Noeud.getnoeuds().size()));
+                Noeud.displayNoeuds();
+
+
+                // Chargement des arcs
+                br = new BufferedReader(new FileReader(arcfile));
+                br.readLine();
+                while ((line = br.readLine()) != null) {
+                    elem = line.split("\t");
+                    new Arc(Noeud.getNoeud(elem[0]), Noeud.getNoeud(elem[1]), Double.parseDouble(elem[2]), Double.parseDouble(elem[3]));
+                }
+                br.close();
+                this.jTextField3.setText(String.valueOf(Arc.getarcs().size()));
+                Arc.displayArcs();
+
+                // Chargement des demandes
+                br = new BufferedReader(new FileReader(requestfile));
+                br.readLine();
+                while ((line = br.readLine()) != null) {
+                    elem = line.split("\t");
+                    new Demande(Noeud.getNoeud(elem[0]), Noeud.getNoeud(elem[1]), Double.parseDouble(elem[2]));
+                }
+                br.close();
+                this.jTextField4.setText(String.valueOf(Demande.getdemandes().size()));
+                Demande.displayDemandes();
+
+                // Implémentation dans le graphe
+                Application.getSingleton().getgrapheOriginal().getnoeuds().addAll(Noeud.getnoeuds());
+                Application.getSingleton().getgrapheOriginal().getarcs().addAll(Arc.getarcs());
+                Application.getSingleton().getgrapheOriginal().getdemandes().addAll(Demande.getdemandes());
+                JOptionPane.showMessageDialog(null, "Importation des données réussie !",
+                        "Chargement de données", JOptionPane.INFORMATION_MESSAGE);
+                System.out.println(Application.getSingleton().getgrapheOriginal().toString());
+
+            } catch (IOException x) {
+                System.err.println(x);
             }
-          }
-          if (!declarable_node) {
-            node_names.clear();
-            JOptionPane.showMessageDialog(null, "Erreur dans le fichier d'arcs " +
-                    sourcepath + ".arc :\n" +
-                    "* ligne " + line_number + " : le noeud " + elem[1] + " n'existe pas dans le fichier de noeuds.\n" +
-                    "Le chargement des données a été abdandonné.",
-                    "Chargement de données", JOptionPane.ERROR_MESSAGE);
-            return;
-          }
         }
-        br.close();
-
-        // 3. Demandes
-        br = new BufferedReader(new FileReader(requestfile));
-        br.readLine();
-        line_number = 1;
-        while ((line = br.readLine()) != null) {
-          line_number++;
-          elem = line.split("\t");
-          if (elem.length != 3) {
-            JOptionPane.showMessageDialog(null, "Erreur dans le fichier de demandes " +
-                    sourcepath + ".dem :\n" +
-                    "* ligne " + line_number + " : nombre d'arguments incorrect.\n" +
-                    "Le chargement des données a été abdandonné.",
-                    "Chargement de données", JOptionPane.ERROR_MESSAGE);
-            return;
-          }
-          // noeud origine
-          declarable_node = false;
-          for (String name : node_names) {
-            if (elem[0].equals(name)) {
-              declarable_node = true;
-            }
-          }
-          if (!declarable_node) {
-            node_names.clear();
-            JOptionPane.showMessageDialog(null, "Erreur dans le fichier de demandes " +
-                    sourcepath + ".dem :\n" +
-                    "* ligne " + line_number + " : le noeud " + elem[0] + " n'existe pas dans le fichier de noeuds.\n" +
-                    "Le chargement des données a été abdandonné.",
-                    "Chargement de données", JOptionPane.ERROR_MESSAGE);
-            return;
-          }
-          // noeud extremité
-          declarable_node = false;
-          for (String name : node_names) {
-            if (elem[1].equals(name)) {
-              declarable_node = true;
-            }
-          }
-          if (!declarable_node) {
-            node_names.clear();
-            JOptionPane.showMessageDialog(null, "Erreur dans le fichier de demandes " +
-                    sourcepath + ".dem :\n" +
-                    "* ligne " + line_number + " : le noeud " + elem[1] + " n'existe pas dans le fichier de noeuds.\n" +
-                    "Le chargement des données a été abdandonné.",
-                    "Chargement de données", JOptionPane.ERROR_MESSAGE);
-            return;
-          }
-        }
-        br.close();
-        node_names.clear();
-
-        //
-        // Initialisation des objets depuis les données des fichiers
-        //
-
-        this.jTextField1.setText(sourcepath + ".*");
-
-        // Réinitialisation des données précédement chargées
-        Application.getSingleton().getgrapheOriginal().reset();
-        Noeud.getnoeuds().clear();
-        Arc.getarcs().clear();
-        Demande.getdemandes().clear();
-
-        // Chargement des noeuds
-        br = new BufferedReader(new FileReader(nodefile));
-        br.readLine();
-        while ((line = br.readLine()) != null) {
-          elem = line.split("\t");
-          new Noeud(elem[0], Double.parseDouble(elem[1]), Double.parseDouble(elem[2]));
-        }
-        br.close();
-        this.jTextField2.setText(String.valueOf(Noeud.getnoeuds().size()));
-        Noeud.displayNoeuds();
-
-
-        // Chargement des arcs
-        br = new BufferedReader(new FileReader(arcfile));
-        br.readLine();
-        while ((line = br.readLine()) != null) {
-          elem = line.split("\t");
-          new Arc(Noeud.getNoeud(elem[0]), Noeud.getNoeud(elem[1]), Double.parseDouble(elem[2]), Double.parseDouble(elem[3]));
-        }
-        br.close();
-        this.jTextField3.setText(String.valueOf(Arc.getarcs().size()));
-        Arc.displayArcs();
-
-        // Chargement des demandes
-        br = new BufferedReader(new FileReader(requestfile));
-        br.readLine();
-        while ((line = br.readLine()) != null) {
-          elem = line.split("\t");
-          new Demande(Noeud.getNoeud(elem[0]), Noeud.getNoeud(elem[1]), Double.parseDouble(elem[2]));
-        }
-        br.close();
-        this.jTextField4.setText(String.valueOf(Demande.getdemandes().size()));
-        Demande.displayDemandes();
-
-        // Implémentation dans le graphe
-        Application.getSingleton().getgrapheOriginal().getnoeuds().addAll(Noeud.getnoeuds());
-        Application.getSingleton().getgrapheOriginal().getarcs().addAll(Arc.getarcs());
-        Application.getSingleton().getgrapheOriginal().getdemandes().addAll(Demande.getdemandes());
-        JOptionPane.showMessageDialog(null, "Importation des données réussie !",
-                "Chargement de données", JOptionPane.INFORMATION_MESSAGE);
-        System.out.println(Application.getSingleton().getgrapheOriginal().toString());
-
-      } catch (IOException x) {
-        System.err.println(x);
-      }
     }
-  }
 
   @Action
   public void solve() {
@@ -861,7 +905,10 @@ public class NetOptimizView extends FrameView {
               Integer.parseInt(this.jSpinner2.getModel().getValue().toString()));
       this.refresh("solution_recuit",String.valueOf(soluce));
     } else if (methode_de_resolution.equals("vns")) {
-        
+        TelecomVNS tvns = new TelecomVNS();
+        double soluce = tvns.resoudre(Integer.parseInt(this.jSpinner3.getModel().getValue().toString()),
+                Integer.parseInt(this.jSpinner4.getModel().getValue().toString()));
+        this.refresh("solution_recuit", String.valueOf(soluce));
     }
   }
 
