@@ -7,6 +7,9 @@ import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.UndirectedSparseMultigraph;
 import edu.uci.ics.jung.visualization.BasicVisualizationServer;
+import edu.uci.ics.jung.visualization.VisualizationViewer;
+import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
+import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 import edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position;
 import ilog.concert.IloException;
@@ -1027,9 +1030,9 @@ public class NetOptimizView extends FrameView {
         }
         // Layout<V, E>, BasicVisualizationServer<V,E>
         Layout<Integer, String> layout = new CircleLayout(gJungGraph);
-        Dimension dim = new Dimension(this.graphPanel.getWidth(), this.graphPanel.getHeight());
+        Dimension dim = new Dimension(this.graphPanel.getWidth() -20, this.graphPanel.getHeight() - 20);
         layout.setSize(dim);
-        BasicVisualizationServer<Integer, String> vv = new BasicVisualizationServer<Integer, String>(layout);
+        VisualizationViewer<Integer, String> vv = new VisualizationViewer<Integer, String>(layout);
         vv.setPreferredSize(dim);
         // Setup up a new vertex to paint transformer...
         /*Transformer<Integer,Paint> vertexPaint = new Transformer<Integer,Paint>() {
@@ -1051,6 +1054,10 @@ public class NetOptimizView extends FrameView {
         vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller());
         vv.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller());
         vv.getRenderer().getVertexLabelRenderer().setPosition(Position.AUTO);
+
+        DefaultModalGraphMouse gm = new DefaultModalGraphMouse();
+        gm.setMode(ModalGraphMouse.Mode.TRANSFORMING);
+vv.setGraphMouse(gm);
 
         switch (m) {
             case Recuit:
