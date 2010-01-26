@@ -3,7 +3,15 @@
  */
 package netoptimiz;
 
+import edu.uci.ics.jung.algorithms.layout.CircleLayout;
+import edu.uci.ics.jung.algorithms.layout.Layout;
+import edu.uci.ics.jung.graph.UndirectedSparseMultigraph;
+import edu.uci.ics.jung.visualization.BasicVisualizationServer;
+import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
+import edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position;
 import ilog.concert.IloException;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import netoptimiz.graphe.*;
 
 import org.jdesktop.application.Action;
@@ -34,86 +42,86 @@ import netoptimiz.vns.TelecomVNS;
  */
 public class NetOptimizView extends FrameView {
 
-  public NetOptimizView(SingleFrameApplication app) {
-    super(app);
+    public NetOptimizView(SingleFrameApplication app) {
+        super(app);
 
-    initComponents();
+        initComponents();
 
-    // status bar initialization - message timeout, idle icon and busy animation, etc
-    ResourceMap resourceMap = getResourceMap();
-    int messageTimeout = resourceMap.getInteger("StatusBar.messageTimeout");
-    messageTimer = new Timer(messageTimeout, new ActionListener() {
+        // status bar initialization - message timeout, idle icon and busy animation, etc
+        ResourceMap resourceMap = getResourceMap();
+        int messageTimeout = resourceMap.getInteger("StatusBar.messageTimeout");
+        messageTimer = new Timer(messageTimeout, new ActionListener() {
 
-      public void actionPerformed(ActionEvent e) {
-        statusMessageLabel.setText("");
-      }
-    });
-    messageTimer.setRepeats(false);
-    int busyAnimationRate = resourceMap.getInteger("StatusBar.busyAnimationRate");
-    for (int i = 0; i < busyIcons.length; i++) {
-      busyIcons[i] = resourceMap.getIcon("StatusBar.busyIcons[" + i + "]");
-    }
-    busyIconTimer = new Timer(busyAnimationRate, new ActionListener() {
-
-      public void actionPerformed(ActionEvent e) {
-        busyIconIndex = (busyIconIndex + 1) % busyIcons.length;
-        statusAnimationLabel.setIcon(busyIcons[busyIconIndex]);
-      }
-    });
-    idleIcon = resourceMap.getIcon("StatusBar.idleIcon");
-    statusAnimationLabel.setIcon(idleIcon);
-    progressBar.setVisible(false);
-
-    // connecting action tasks to status bar via TaskMonitor
-    TaskMonitor taskMonitor = new TaskMonitor(getApplication().getContext());
-    taskMonitor.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-
-      public void propertyChange(java.beans.PropertyChangeEvent evt) {
-        String propertyName = evt.getPropertyName();
-        if ("started".equals(propertyName)) {
-          if (!busyIconTimer.isRunning()) {
-            statusAnimationLabel.setIcon(busyIcons[0]);
-            busyIconIndex = 0;
-            busyIconTimer.start();
-          }
-          progressBar.setVisible(true);
-          progressBar.setIndeterminate(true);
-        } else if ("done".equals(propertyName)) {
-          busyIconTimer.stop();
-          statusAnimationLabel.setIcon(idleIcon);
-          progressBar.setVisible(false);
-          progressBar.setValue(0);
-        } else if ("message".equals(propertyName)) {
-          String text = (String) (evt.getNewValue());
-          statusMessageLabel.setText((text == null) ? "" : text);
-          messageTimer.restart();
-        } else if ("progress".equals(propertyName)) {
-          int value = (Integer) (evt.getNewValue());
-          progressBar.setVisible(true);
-          progressBar.setIndeterminate(false);
-          progressBar.setValue(value);
+            public void actionPerformed(ActionEvent e) {
+                statusMessageLabel.setText("");
+            }
+        });
+        messageTimer.setRepeats(false);
+        int busyAnimationRate = resourceMap.getInteger("StatusBar.busyAnimationRate");
+        for (int i = 0; i < busyIcons.length; i++) {
+            busyIcons[i] = resourceMap.getIcon("StatusBar.busyIcons[" + i + "]");
         }
-      }
-    });
-  //this.LoadData();
-  }
+        busyIconTimer = new Timer(busyAnimationRate, new ActionListener() {
 
-  @Action
-  public void showAboutBox() {
-    if (aboutBox == null) {
-      JFrame mainFrame = NetOptimizApp.getApplication().getMainFrame();
-      aboutBox = new NetOptimizAboutBox(mainFrame);
-      aboutBox.setLocationRelativeTo(mainFrame);
+            public void actionPerformed(ActionEvent e) {
+                busyIconIndex = (busyIconIndex + 1) % busyIcons.length;
+                statusAnimationLabel.setIcon(busyIcons[busyIconIndex]);
+            }
+        });
+        idleIcon = resourceMap.getIcon("StatusBar.idleIcon");
+        statusAnimationLabel.setIcon(idleIcon);
+        progressBar.setVisible(false);
+
+        // connecting action tasks to status bar via TaskMonitor
+        TaskMonitor taskMonitor = new TaskMonitor(getApplication().getContext());
+        taskMonitor.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                String propertyName = evt.getPropertyName();
+                if ("started".equals(propertyName)) {
+                    if (!busyIconTimer.isRunning()) {
+                        statusAnimationLabel.setIcon(busyIcons[0]);
+                        busyIconIndex = 0;
+                        busyIconTimer.start();
+                    }
+                    progressBar.setVisible(true);
+                    progressBar.setIndeterminate(true);
+                } else if ("done".equals(propertyName)) {
+                    busyIconTimer.stop();
+                    statusAnimationLabel.setIcon(idleIcon);
+                    progressBar.setVisible(false);
+                    progressBar.setValue(0);
+                } else if ("message".equals(propertyName)) {
+                    String text = (String) (evt.getNewValue());
+                    statusMessageLabel.setText((text == null) ? "" : text);
+                    messageTimer.restart();
+                } else if ("progress".equals(propertyName)) {
+                    int value = (Integer) (evt.getNewValue());
+                    progressBar.setVisible(true);
+                    progressBar.setIndeterminate(false);
+                    progressBar.setValue(value);
+                }
+            }
+        });
+    //this.LoadData();
     }
-    NetOptimizApp.getApplication().show(aboutBox);
-  }
 
-  /** This method is called from within the constructor to
-   * initialize the form.
-   * WARNING: Do NOT modify this code. The content of this method is
-   * always regenerated by the Form Editor.
-   */
-  @SuppressWarnings("unchecked")
+    @Action
+    public void showAboutBox() {
+        if (aboutBox == null) {
+            JFrame mainFrame = NetOptimizApp.getApplication().getMainFrame();
+            aboutBox = new NetOptimizAboutBox(mainFrame);
+            aboutBox.setLocationRelativeTo(mainFrame);
+        }
+        NetOptimizApp.getApplication().show(aboutBox);
+    }
+
+    /** This method is called from within the constructor to
+     * initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is
+     * always regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -153,8 +161,14 @@ public class NetOptimizView extends FrameView {
         jTextField5 = new javax.swing.JTextField();
         jTextField6 = new javax.swing.JTextField();
         jTextField7 = new javax.swing.JTextField();
+        PLTabbedPane = new javax.swing.JTabbedPane();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextArea2 = new javax.swing.JTextArea();
+        graphPanel1 = new javax.swing.JPanel();
+        RecuitTabbedPane = new javax.swing.JTabbedPane();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
+        graphPanel = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
@@ -204,14 +218,17 @@ public class NetOptimizView extends FrameView {
         jTextField2.setEditable(false);
         jTextField2.setText(resourceMap.getString("jTextField2.text")); // NOI18N
         jTextField2.setName("jTextField2"); // NOI18N
+        jTextField2.setPreferredSize(new java.awt.Dimension(60, 20));
 
         jTextField3.setEditable(false);
         jTextField3.setText(resourceMap.getString("jTextField3.text")); // NOI18N
         jTextField3.setName("jTextField3"); // NOI18N
+        jTextField3.setPreferredSize(new java.awt.Dimension(60, 20));
 
         jTextField4.setEditable(false);
         jTextField4.setText(resourceMap.getString("jTextField4.text")); // NOI18N
         jTextField4.setName("jTextField4"); // NOI18N
+        jTextField4.setPreferredSize(new java.awt.Dimension(60, 20));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -276,14 +293,17 @@ public class NetOptimizView extends FrameView {
         jTextField8.setEditable(false);
         jTextField8.setText(resourceMap.getString("jTextField8.text")); // NOI18N
         jTextField8.setName("jTextField8"); // NOI18N
+        jTextField8.setPreferredSize(new java.awt.Dimension(60, 20));
 
         jTextField9.setEditable(false);
         jTextField9.setText(resourceMap.getString("jTextField9.text")); // NOI18N
         jTextField9.setName("jTextField9"); // NOI18N
+        jTextField9.setPreferredSize(new java.awt.Dimension(60, 20));
 
         jTextField10.setEditable(false);
         jTextField10.setText(resourceMap.getString("jTextField10.text")); // NOI18N
         jTextField10.setName("jTextField10"); // NOI18N
+        jTextField10.setPreferredSize(new java.awt.Dimension(60, 20));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -296,10 +316,10 @@ public class NetOptimizView extends FrameView {
                     .addComponent(jRadioButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jRadioButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jTextField8, javax.swing.GroupLayout.DEFAULT_SIZE, 67, Short.MAX_VALUE)
+                    .addComponent(jTextField9, javax.swing.GroupLayout.DEFAULT_SIZE, 67, Short.MAX_VALUE)
+                    .addComponent(jTextField10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -426,14 +446,17 @@ public class NetOptimizView extends FrameView {
         jTextField5.setEditable(false);
         jTextField5.setText(resourceMap.getString("jTextField5.text")); // NOI18N
         jTextField5.setName("jTextField5"); // NOI18N
+        jTextField5.setPreferredSize(new java.awt.Dimension(60, 20));
 
         jTextField6.setEditable(false);
         jTextField6.setText(resourceMap.getString("jTextField6.text")); // NOI18N
         jTextField6.setName("jTextField6"); // NOI18N
+        jTextField6.setPreferredSize(new java.awt.Dimension(60, 20));
 
         jTextField7.setEditable(false);
         jTextField7.setText(resourceMap.getString("jTextField7.text")); // NOI18N
         jTextField7.setName("jTextField7"); // NOI18N
+        jTextField7.setPreferredSize(new java.awt.Dimension(60, 20));
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -469,6 +492,37 @@ public class NetOptimizView extends FrameView {
                 .addContainerGap(12, Short.MAX_VALUE))
         );
 
+        PLTabbedPane.setBorder(javax.swing.BorderFactory.createTitledBorder(resourceMap.getString("PLTabbedPane.border.title"))); // NOI18N
+        PLTabbedPane.setName("PLTabbedPane"); // NOI18N
+
+        jScrollPane2.setName("jScrollPane2"); // NOI18N
+
+        jTextArea2.setColumns(20);
+        jTextArea2.setRows(5);
+        jTextArea2.setName("jTextArea2"); // NOI18N
+        jScrollPane2.setViewportView(jTextArea2);
+
+        PLTabbedPane.addTab(resourceMap.getString("jScrollPane2.TabConstraints.tabTitle"), jScrollPane2); // NOI18N
+
+        graphPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        graphPanel1.setName("graphPanel1"); // NOI18N
+
+        javax.swing.GroupLayout graphPanel1Layout = new javax.swing.GroupLayout(graphPanel1);
+        graphPanel1.setLayout(graphPanel1Layout);
+        graphPanel1Layout.setHorizontalGroup(
+            graphPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 404, Short.MAX_VALUE)
+        );
+        graphPanel1Layout.setVerticalGroup(
+            graphPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 385, Short.MAX_VALUE)
+        );
+
+        PLTabbedPane.addTab(resourceMap.getString("graphPanel1.TabConstraints.tabTitle"), graphPanel1); // NOI18N
+
+        RecuitTabbedPane.setBorder(javax.swing.BorderFactory.createTitledBorder(resourceMap.getString("RecuitTabbedPane.border.title"))); // NOI18N
+        RecuitTabbedPane.setName("RecuitTabbedPane"); // NOI18N
+
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
         jTextArea1.setColumns(20);
@@ -477,37 +531,56 @@ public class NetOptimizView extends FrameView {
         jScrollPane1.setViewportView(jTextArea1);
         jTextArea1.getAccessibleContext().setAccessibleParent(mainPanel);
 
+        RecuitTabbedPane.addTab(resourceMap.getString("jScrollPane1.TabConstraints.tabTitle"), jScrollPane1); // NOI18N
+
+        graphPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        graphPanel.setName("graphPanel"); // NOI18N
+
+        javax.swing.GroupLayout graphPanelLayout = new javax.swing.GroupLayout(graphPanel);
+        graphPanel.setLayout(graphPanelLayout);
+        graphPanelLayout.setHorizontalGroup(
+            graphPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 438, Short.MAX_VALUE)
+        );
+        graphPanelLayout.setVerticalGroup(
+            graphPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 385, Short.MAX_VALUE)
+        );
+
+        RecuitTabbedPane.addTab(resourceMap.getString("graphPanel.TabConstraints.tabTitle"), graphPanel); // NOI18N
+
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(mainPanelLayout.createSequentialGroup()
-                                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(mainPanelLayout.createSequentialGroup()
                                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(RecuitTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 459, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(mainPanelLayout.createSequentialGroup()
                                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addGap(33, 33, 33)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 432, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(29, Short.MAX_VALUE))
+                                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(PLTabbedPane))))
+                .addContainerGap())
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -531,10 +604,14 @@ public class NetOptimizView extends FrameView {
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(69, 69, 69))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(RecuitTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
+                    .addComponent(PLTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE))
+                .addContainerGap())
         );
+
+        PLTabbedPane.getAccessibleContext().setAccessibleName(resourceMap.getString("PLTabbedPane.AccessibleContext.accessibleName")); // NOI18N
 
         mainPanel.getAccessibleContext().setAccessibleName(resourceMap.getString("mainPanel.AccessibleContext.accessibleName")); // NOI18N
 
@@ -575,11 +652,11 @@ public class NetOptimizView extends FrameView {
         statusPanel.setLayout(statusPanelLayout);
         statusPanelLayout.setHorizontalGroup(
             statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 917, Short.MAX_VALUE)
+            .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 912, Short.MAX_VALUE)
             .addGroup(statusPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(statusMessageLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 747, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 742, Short.MAX_VALUE)
                 .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(statusAnimationLabel)
@@ -602,9 +679,9 @@ public class NetOptimizView extends FrameView {
         setStatusBar(statusPanel);
     }// </editor-fold>//GEN-END:initComponents
 
-  @Action
-  public void LoadData() {
-        JFileChooser jfc1 = new JFileChooser();
+    @Action
+    public void LoadData() {
+        JFileChooser jfc1 = new JFileChooser("../Jeu de tests/");
         FileNameExtensionFilter filter = new FileNameExtensionFilter(
                 "Fichiers de Noeuds, d'Arcs ou de Demandes", "nod", "arc", "dem");
         jfc1.setFileFilter(filter);
@@ -658,7 +735,7 @@ public class NetOptimizView extends FrameView {
                 String[] elem = null;
                 Integer line_number = 1;
                 ArrayList<String> node_names = new ArrayList<String>(); //récupère les noms des noeuds à déclarer
-                                                                        // à la 1ère lecture du fichier de noeuds
+                // à la 1ère lecture du fichier de noeuds
                 boolean declarable_node = false;
                 double test_double_parse;
 
@@ -679,7 +756,9 @@ public class NetOptimizView extends FrameView {
                                 "Le chargement des données a été abdandonné.",
                                 "Chargement de données", JOptionPane.ERROR_MESSAGE);
                         return;
-                    } else node_names.add(elem[0]);
+                    } else {
+                        node_names.add(elem[0]);
+                    }
                     // vérification du format des champs de type double
                     try {
                         // abscisse
@@ -689,7 +768,7 @@ public class NetOptimizView extends FrameView {
                     } catch (NumberFormatException e) {
                         JOptionPane.showMessageDialog(null, "Erreur dans le fichier de noeuds " +
                                 sourcepath + ".nod :\n" +
-                                "* ligne "+ line_number +" : erreur de conversion en type 'double'.\n" +
+                                "* ligne " + line_number + " : erreur de conversion en type 'double'.\n" +
                                 "Le chargement des données a été abdandonné.",
                                 "Chargement de données", JOptionPane.ERROR_MESSAGE);
                         return;
@@ -755,7 +834,7 @@ public class NetOptimizView extends FrameView {
                     } catch (NumberFormatException e) {
                         JOptionPane.showMessageDialog(null, "Erreur dans le fichier d'arcs " +
                                 sourcepath + ".nod :\n" +
-                                "* ligne "+ line_number +" : erreur de conversion en type 'double'.\n" +
+                                "* ligne " + line_number + " : erreur de conversion en type 'double'.\n" +
                                 "Le chargement des données a été abdandonné.",
                                 "Chargement de données", JOptionPane.ERROR_MESSAGE);
                         return;
@@ -819,7 +898,7 @@ public class NetOptimizView extends FrameView {
                     } catch (NumberFormatException e) {
                         JOptionPane.showMessageDialog(null, "Erreur dans le fichier de demandes " +
                                 sourcepath + ".nod :\n" +
-                                "* ligne "+ line_number +" : erreur de conversion en type 'double'.\n" +
+                                "* ligne " + line_number + " : erreur de conversion en type 'double'.\n" +
                                 "Le chargement des données a été abdandonné.",
                                 "Chargement de données", JOptionPane.ERROR_MESSAGE);
                         return;
@@ -888,52 +967,121 @@ public class NetOptimizView extends FrameView {
         }
     }
 
-  @Action
-  public void solve() {
-    this.refresh("principal"," ");
-    String methode_de_resolution = this.buttonGroup1.getSelection().getActionCommand();
-    if (methode_de_resolution.equals("cplex")) {
-      try {
-        (new ProgrammeLineaire()).resoudre();
-      } catch (IloException ex) {
-        this.refresh("principal","Cplex problem : " + ex.getMessage());
-      }
-    } else if (methode_de_resolution.equals("recuit")) {
-      this.refresh("principal",methode_de_resolution + "=> Paliers:" + this.jSpinner1.getModel().getValue().toString() + " Itérations:" + this.jSpinner2.getModel().getValue().toString());
-      TelecomRecuit tr = new TelecomRecuit();
-      double soluce = tr.resoudre(Integer.parseInt(this.jSpinner1.getModel().getValue().toString()),
-              Integer.parseInt(this.jSpinner2.getModel().getValue().toString()));
-      this.refresh("solution_recuit",String.valueOf(soluce));
-    } else if (methode_de_resolution.equals("vns")) {
-        TelecomVNS tvns = new TelecomVNS();
-        double soluce = tvns.resoudre(Integer.parseInt(this.jSpinner3.getModel().getValue().toString()),
-                Integer.parseInt(this.jSpinner4.getModel().getValue().toString()));
-        this.refresh("solution_vns", String.valueOf(soluce));
+    @Action
+    public void solve() {
+        this.refresh("principal", " ");
+        String methode_de_resolution = this.buttonGroup1.getSelection().getActionCommand();
+        if (methode_de_resolution.equals("cplex")) {
+            try {
+                double soluce = (new ProgrammeLineaire()).resoudre();
+                this.refresh("solution_cplex", String.valueOf(soluce));
+            } catch (IloException ex) {
+                this.refresh("principal", "Cplex problem : " + ex.getMessage());
+            }
+        } else if (methode_de_resolution.equals("recuit")) {
+            this.refresh("principal", methode_de_resolution + "=> Paliers:" + this.jSpinner1.getModel().getValue().toString() + " Itérations:" + this.jSpinner2.getModel().getValue().toString());
+            TelecomRecuit tr = new TelecomRecuit();
+            double soluce = tr.resoudre(Integer.parseInt(this.jSpinner1.getModel().getValue().toString()),
+                    Integer.parseInt(this.jSpinner2.getModel().getValue().toString()));
+            this.refresh("solution_recuit", String.valueOf(soluce));
+        } else if (methode_de_resolution.equals("vns")) {
+            /*TelecomVNS tvns = new TelecomVNS();
+            double soluce = tvns.resoudre(Integer.parseInt(this.jSpinner3.getModel().getValue().toString()),
+            Integer.parseInt(this.jSpinner4.getModel().getValue().toString()));
+            this.refresh("solution_vns", String.valueOf(soluce));*/
+        }
     }
-  }
 
-  public void refresh(String type,String s) {
-      if ( type.equals("console")) {
+    public void refresh(String type, String s) {
+        if (type.equals("console")) {
             System.out.println(s);
-        }else if ( type.equals("principal")) {
+        } else if (type.equals("principal")) {
             this.jTextArea1.setText(this.jTextArea1.getText() + "\n" + s);
-        }else if ( type.equals("température")) {
+        } else if (type.equals("température")) {
             this.jTextField5.setText(s);
-        }else if ( type.equals("k")) {
+        } else if (type.equals("k")) {
             this.jTextField6.setText(s);
-        }else if ( type.equals("itérations")) {
+        } else if (type.equals("itérations")) {
             this.jTextField7.setText(s);
-        }else if ( type.equals("solution_cplex")) {
+        } else if (type.equals("solution_cplex")) {
             this.jTextField8.setText(s);
-        }else if ( type.equals("solution_recuit")) {
+        } else if (type.equals("solution_recuit")) {
             this.jTextField9.setText(s);
-        }else if ( type.equals("solution_vns")) {
+        } else if (type.equals("solution_vns")) {
             this.jTextField10.setText(s);
         }
-  }
+    }
+
+    public void drawGraph(Graphe gJungGraphDraw, Methode m) {
+        UndirectedSparseMultigraph<Noeud, Arc> gJungGraph = new UndirectedSparseMultigraph<Noeud, Arc>();
+        // On l'alimente pas les arcs de notre graphe
+        for (Arc a : gJungGraphDraw.getarcs()) {
+            // On ne créer que les arcs qui ont une capacité
+            if (a.getCapacite() != 0) {
+                gJungGraph.addEdge(a, a.getNoeudOrigine(), a.getNoeudExtremite());
+            }
+        }
+        // On alimente les noeuds à notre graphe
+        for (Noeud n : gJungGraphDraw.getnoeuds()) {
+            gJungGraph.addVertex(n);
+        }
+        // Layout<V, E>, BasicVisualizationServer<V,E>
+        Layout<Integer, String> layout = new CircleLayout(gJungGraph);
+        Dimension dim = new Dimension(this.graphPanel.getWidth(), this.graphPanel.getHeight());
+        layout.setSize(dim);
+        BasicVisualizationServer<Integer, String> vv = new BasicVisualizationServer<Integer, String>(layout);
+        vv.setPreferredSize(dim);
+        // Setup up a new vertex to paint transformer...
+        /*Transformer<Integer,Paint> vertexPaint = new Transformer<Integer,Paint>() {
+        public Paint transform(Integer i) {
+        return Color.GREEN;
+        }
+        };*/
+        // Set up a new stroke Transformer for the edges
+        /*float dash[] = {10.0f};
+        final Stroke edgeStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT,
+        BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
+        Transformer<String, Stroke> edgeStrokeTransformer = new Transformer<String, Stroke>() {
+        public Stroke transform(String s) {
+        return edgeStroke;
+        }
+        };*/
+        //vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
+        //vv.getRenderContext().setEdgeStrokeTransformer(edgeStrokeTransformer);
+        vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller());
+        //vv.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller());
+        vv.getRenderer().getVertexLabelRenderer().setPosition(Position.AUTO);
+
+        switch (m) {
+            case Recuit:
+                this.graphPanel.setLayout(new GridLayout(1, 1));
+                this.graphPanel.setPreferredSize(dim);
+                this.graphPanel.add(vv);
+                this.RecuitTabbedPane.setSelectedIndex(0);
+                break;
+            case PL:
+                this.graphPanel1.setLayout(new GridLayout(1, 1));
+                this.graphPanel1.setPreferredSize(dim);
+                this.graphPanel1.add(vv);
+                this.PLTabbedPane.setSelectedIndex(0);
+                break;
+        }
+
+    this.graphPanel.setVisible(true);
+    this.graphPanel.revalidate();
+    //this.getFrame().pack();
+    /*JFrame frame = new JFrame("Graph Recuit");
+    frame.getContentPane().add(vv);
+    frame.pack();
+    frame.setVisible(true);*/
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTabbedPane PLTabbedPane;
+    private javax.swing.JTabbedPane RecuitTabbedPane;
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JPanel graphPanel;
+    private javax.swing.JPanel graphPanel1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
@@ -956,11 +1104,13 @@ public class NetOptimizView extends FrameView {
     private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JRadioButton jRadioButton3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSpinner jSpinner1;
     private javax.swing.JSpinner jSpinner2;
     private javax.swing.JSpinner jSpinner3;
     private javax.swing.JSpinner jSpinner4;
     private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField10;
     private javax.swing.JTextField jTextField2;
@@ -978,10 +1128,10 @@ public class NetOptimizView extends FrameView {
     private javax.swing.JLabel statusMessageLabel;
     private javax.swing.JPanel statusPanel;
     // End of variables declaration//GEN-END:variables
-  private final Timer messageTimer;
-  private final Timer busyIconTimer;
-  private final Icon idleIcon;
-  private final Icon[] busyIcons = new Icon[15];
-  private int busyIconIndex = 0;
-  private JDialog aboutBox;
+    private final Timer messageTimer;
+    private final Timer busyIconTimer;
+    private final Icon idleIcon;
+    private final Icon[] busyIcons = new Icon[15];
+    private int busyIconIndex = 0;
+    private JDialog aboutBox;
 }

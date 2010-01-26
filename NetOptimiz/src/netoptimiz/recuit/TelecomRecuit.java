@@ -14,6 +14,7 @@ import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 import edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position;
 import java.awt.Dimension;
 import javax.swing.JFrame;
+import netoptimiz.Methode;
 
 
 public class TelecomRecuit extends ModeleRecuit {
@@ -90,7 +91,8 @@ public class TelecomRecuit extends ModeleRecuit {
         }
         this.afficherInfos("principal","Nombre d'arcs = " + nbArcsSolution);
         // Dessine le graph
-        drawGraph(monGraphe);
+        //drawGraph(monGraphe);
+        NetOptimizApp.getApplication().getView().drawGraph(monGraphe, Methode.Recuit);
         // On retourne la soultion
         return calculerCout(monGraphe);
     }
@@ -243,7 +245,7 @@ public class TelecomRecuit extends ModeleRecuit {
         return deltaCout;
     }
 
-    public  void drawGraph (Graphe gJungGraphDraw) {
+    public void drawGraph (Graphe gJungGraphDraw) {
         UndirectedSparseMultigraph<Noeud, Arc> gJungGraph = new UndirectedSparseMultigraph<Noeud, Arc>();
         // On l'alimente pas les arcs de notre graphe
         for (Arc a : gJungGraphDraw.getarcs()) {
@@ -252,7 +254,7 @@ public class TelecomRecuit extends ModeleRecuit {
         }
         // On alimente les noeuds à notre graphe
         for (Noeud n : gJungGraphDraw.getnoeuds()) {
-          gJungGraph.addVertex(n);
+          //gJungGraph.addVertex(n);
         }
         // Layout<V, E>, BasicVisualizationServer<V,E>
         Layout<Integer, String> layout = new CircleLayout(gJungGraph);
