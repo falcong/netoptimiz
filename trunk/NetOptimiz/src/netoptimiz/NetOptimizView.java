@@ -1049,19 +1049,21 @@ public class NetOptimizView extends FrameView {
         //vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
         //vv.getRenderContext().setEdgeStrokeTransformer(edgeStrokeTransformer);
         vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller());
-        //vv.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller());
+        vv.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller());
         vv.getRenderer().getVertexLabelRenderer().setPosition(Position.AUTO);
 
         switch (m) {
             case Recuit:
                 this.graphPanel.setLayout(new GridLayout(1, 1));
                 this.graphPanel.setPreferredSize(dim);
+                this.graphPanel.removeAll();
                 this.graphPanel.add(vv);
                 this.RecuitTabbedPane.setSelectedIndex(0);
                 break;
             case PL:
                 this.graphPanel1.setLayout(new GridLayout(1, 1));
                 this.graphPanel1.setPreferredSize(dim);
+                this.graphPanel1.removeAll();
                 this.graphPanel1.add(vv);
                 this.PLTabbedPane.setSelectedIndex(0);
                 break;
