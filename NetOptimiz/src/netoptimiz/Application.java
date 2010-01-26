@@ -65,7 +65,6 @@ public class Application {
                 if (!chemin.isEmpty()) {
                     // On initialise la capacité basse par le premier arc trouvé
                     double capaciteBasse = chemin.get(0).getCapacite();
-                    //System.out.print("CapaBasse premier arc:" + chemin.get(0).getCapacite() + " " + chemin.get(0).getNoeudOrigine().getNom() +" "+chemin.get(0).getNoeudExtremite().getNom()+"\n");
                     for (Arc aJung : chemin) {
                         // On récupère le minimun des capacités du chemin
                         if (aJung.getCapacite() < capaciteBasse) {
@@ -81,7 +80,7 @@ public class Application {
                         }
                         flag=true;
                     } 
-                    // si non on on réduit le flux et on recommence avec la même demande
+                    // si non on réduit le flux et on recommence avec la même demande
                     else {
                         flux=flux-capaciteBasse;
                         // Pour chaque arc on va réduire la capacité en conséquence
