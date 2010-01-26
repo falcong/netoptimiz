@@ -9,6 +9,7 @@ public class TelecomVNS extends ModeleVNS {
     private double cout;
     private double deltacout;
     private Arc monArc;
+    boolean suppression;
 
   public void faireMvt (Graphe g) {
         // On récupère le nombre d'arcs du graphe
@@ -20,8 +21,8 @@ public class TelecomVNS extends ModeleVNS {
     }
 
 
-    public double resoudre (int kmax, int iterations) {
-         monGraphe = Application.getSingleton().getgrapheOriginal().clone();
+    public void resoudre () {
+         monGraphe=Application.getSingleton().getgraphe();
          coutInitial=calculerCout(monGraphe);
          int i=0;
     for(int n=0;n<this.getIterationsInternes();n++)
@@ -29,7 +30,9 @@ public class TelecomVNS extends ModeleVNS {
         boolean systemFige;
         faireMvt (monGraphe);
         //on initialise le booleen de controle a true en début de chaque boucle
-            systemFige = true;
+             systemFige = true;
+        // On initialiser suppression a false par defaut
+             suppression = false
             // On vérifie que la transformation est valide
             // Si ce n'est pas le cas on revient en arrière et on refait un mvt
             while (accepterMVT(monGraphe)==false && i<this.getKmax()) {
@@ -37,6 +40,7 @@ public class TelecomVNS extends ModeleVNS {
                 {
                     // Si on as trouvé une transformation valide on passe systemFige à false
                     monArc.setCapacite(1);
+                    suppression = true;
                     systemFige = false;
                     i++;
                 }
@@ -47,7 +51,6 @@ public class TelecomVNS extends ModeleVNS {
         if(systemFige == true) break;
 
     }
-         return calculerCout(monGraphe);
     }
 public double calculerCout (Graphe g) {
     for (Arc a : g.getarcs()) {
@@ -69,7 +72,49 @@ public double calculerCout (Graphe g) {
    calculCout=this.calculerCout(monGraphe);
     if( coutInitial >calculCout )
    {
-        coutInitial = calculCout;
+        //*** En cas d'ajout de capacité il est inutile de faire les 3 tests suivants ***//
+        // 1) On  cherche à vérifier que chaque Noeud à au moins un arc de capacité!=0
+        if (suppression) {
+            for (Noeud n : g.getnoeuds()) {
+                for (Arc a : g.getarcs()) {
+                    // On regarde si la capacité de l'arc=1 et on regarde si son noeud origine ou extremité correspond au noeud courant
+                    if (a.getCapacite()!=0 && (a.getNoeudOrigine().equals(n) || a.getNoeudExtremite().equals(n))) {
+                        break;
+                    }
+                    // si le noeud a aucun arc de capacité!=0 alors le mouvement n'est pas accepté
+                    else return false;
+                }
+            }
+
+        // On appelle la fonction de vérification des demandes
+           // 2) vérification que le réseau n'a pas été coupé en 2 sous-réseaux
+        // pour cela on vérifie que les 2 noeuds concernés peuvent se joindre via d'autres arcs
+            // On récupère les noeuds extrémité et origine
+            Noeud n1=monArc.getNoeudOrigine();
+            Noeud n2=monArc.getNoeudExtremite();
+            // On crée un graphe Jung (non orienté)
+            UndirectedSparseMultigraph<Noeud, Arc> gJung = new UndirectedSparseMultigraph<Noeud, Arc>();
+            // On l'alimente pas les arcs de notre graphe
+            for (Arc a : Graphe.getSingleton().getarcs()) {
+              gJung.addEdge(a,a.getNoeudOrigine(), a.getNoeudExtremite());
+            }
+            // On regarde si les noeuds sont toujours reliés grace au Dijkstra
+            List<Arc> chemin = Application.getSingleton().TrouverCheminPlusCourt(gJung, n1, n2);
+            // Si la liste de retour est vide, c'est que le réseau est coupé en 2 sous réseaux => non valide
+            if (chemin.isEmpty()) return false;
+
+        // 3) On vérifie que les demandes sont remplies
+            // On alimente les noeuds à notre graphe
+            for (Noeud n : Graphe.getSingleton().getnoeuds()) {
+              gJung.addVertex(n);
+            }
+            // On appelle la fonction de vérification des demandes
+            Application.getSingleton().verifierDemandes(gJung);
+        }
+        //*******************//
+
+        // Si tout est vérifié
+       coutInitial = calculCout;
        return true;
    }
    else return false;
