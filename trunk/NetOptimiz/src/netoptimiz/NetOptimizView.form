@@ -652,7 +652,7 @@
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                <TitledBorder title="Programme Lin&#xe9;aire : ">
+                <TitledBorder title="Programme Lin&#xe9;aire :">
                   <Property name="titleX" resourceKey="PLTabbedPane.border.title"/>
                 </TitledBorder>
               </Border>
@@ -727,7 +727,7 @@
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                <TitledBorder title="Recuit Simul&#xe9; : ">
+                <TitledBorder title="Recuit Simul&#xe9; :">
                   <Property name="titleX" resourceKey="RecuitTabbedPane.border.title"/>
                 </TitledBorder>
               </Border>
