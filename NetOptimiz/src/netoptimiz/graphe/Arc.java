@@ -66,7 +66,7 @@ public class Arc {
 
     @Override
     public String toString() {
-        return noeudOrigine.getNom() + "->" + noeudExtremite.getNom();
+        return Double.toString(cout);
     }
 
 
