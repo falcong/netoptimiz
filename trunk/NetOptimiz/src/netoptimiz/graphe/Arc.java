@@ -64,5 +64,12 @@ public class Arc {
         this.noeudOrigine = val;
     }
 
+    @Override
+    public String toString() {
+        return noeudOrigine.getNom() + "->" + noeudExtremite.getNom();
+    }
+
+
+
 }
 

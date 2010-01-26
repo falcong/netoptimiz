@@ -87,7 +87,7 @@ public class ProgrammeLineaire {
         modele.addMinimize(obj);
       }
 
-      modele.exportModel("c:/lpex1.lp");
+      //modele.exportModel("c:/lpex1.lp");
       if (modele.solve()) {
         for (Variable v : variables) {
           if (v.getType() == 1)
@@ -95,6 +95,7 @@ public class ProgrammeLineaire {
         }
 
         System.out.println("Objectif = " + modele.getObjValue());
+        return modele.getObjValue();
       }
 
       modele.end();

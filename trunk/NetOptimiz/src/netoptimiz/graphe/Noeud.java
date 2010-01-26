@@ -1,5 +1,6 @@
 package netoptimiz.graphe;
 
+import com.sun.xml.internal.bind.v2.runtime.RuntimeUtil.ToStringAdapter;
 import java.util.ArrayList;
 
 public class Noeud {
@@ -61,6 +62,13 @@ public class Noeud {
     public void setOrd (double val) {
         this.ord = val;
     }
+
+    @Override
+    public String toString() {
+        return nom;
+    }
+
+
 
 }
 
