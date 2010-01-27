@@ -48,7 +48,7 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <Component id="RecuitTabbedPane" pref="459" max="32767" attributes="0"/>
+                              <Component id="RecuitTabbedPane" pref="455" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" max="-2" attributes="0">
@@ -95,8 +95,8 @@
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="RecuitTabbedPane" pref="444" max="32767" attributes="0"/>
-                      <Component id="PLTabbedPane" alignment="0" pref="444" max="32767" attributes="0"/>
+                      <Component id="RecuitTabbedPane" pref="442" max="32767" attributes="0"/>
+                      <Component id="PLTabbedPane" alignment="0" pref="442" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -248,6 +248,7 @@
               <action class="netoptimiz.NetOptimizView" id="solve" methodName="solve"/>
             </Property>
             <Property name="text" type="java.lang.String" resourceKey="jButton4.text"/>
+            <Property name="enabled" type="boolean" value="false"/>
             <Property name="name" type="java.lang.String" value="jButton4" noResource="true"/>
           </Properties>
         </Component>
@@ -327,7 +328,6 @@
                 <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                   <ComponentRef name="buttonGroup1"/>
                 </Property>
-                <Property name="selected" type="boolean" value="true"/>
                 <Property name="text" type="java.lang.String" resourceKey="jRadioButton2.text"/>
                 <Property name="actionCommand" type="java.lang.String" resourceKey="jRadioButton2.actionCommand"/>
                 <Property name="name" type="java.lang.String" value="jRadioButton2" noResource="true"/>
@@ -716,7 +716,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="385" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="380" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -788,12 +788,12 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="438" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="430" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="385" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="380" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>

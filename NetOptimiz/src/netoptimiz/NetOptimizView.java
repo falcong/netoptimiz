@@ -6,7 +6,6 @@ package netoptimiz;
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.UndirectedSparseMultigraph;
-import edu.uci.ics.jung.visualization.BasicVisualizationServer;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
@@ -38,7 +37,6 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import netoptimiz.programmelineaire.ProgrammeLineaire;
 import netoptimiz.recuit.TelecomRecuit;
-import netoptimiz.vns.TelecomVNS;
 
 /**
  * The application's main frame.
@@ -272,6 +270,7 @@ public class NetOptimizView extends FrameView {
 
         jButton4.setAction(actionMap.get("solve")); // NOI18N
         jButton4.setText(resourceMap.getString("jButton4.text")); // NOI18N
+        jButton4.setEnabled(false);
         jButton4.setName("jButton4"); // NOI18N
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), resourceMap.getString("jPanel2.border.title"))); // NOI18N
@@ -283,7 +282,6 @@ public class NetOptimizView extends FrameView {
         jRadioButton1.setName("jRadioButton1"); // NOI18N
 
         buttonGroup1.add(jRadioButton2);
-        jRadioButton2.setSelected(true);
         jRadioButton2.setText(resourceMap.getString("jRadioButton2.text")); // NOI18N
         jRadioButton2.setActionCommand(resourceMap.getString("jRadioButton2.actionCommand")); // NOI18N
         jRadioButton2.setName("jRadioButton2"); // NOI18N
@@ -518,7 +516,7 @@ public class NetOptimizView extends FrameView {
         );
         graphPanel1Layout.setVerticalGroup(
             graphPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 385, Short.MAX_VALUE)
+            .addGap(0, 380, Short.MAX_VALUE)
         );
 
         PLTabbedPane.addTab(resourceMap.getString("graphPanel1.TabConstraints.tabTitle"), graphPanel1); // NOI18N
@@ -543,11 +541,11 @@ public class NetOptimizView extends FrameView {
         graphPanel.setLayout(graphPanelLayout);
         graphPanelLayout.setHorizontalGroup(
             graphPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 438, Short.MAX_VALUE)
+            .addGap(0, 430, Short.MAX_VALUE)
         );
         graphPanelLayout.setVerticalGroup(
             graphPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 385, Short.MAX_VALUE)
+            .addGap(0, 380, Short.MAX_VALUE)
         );
 
         RecuitTabbedPane.addTab(resourceMap.getString("graphPanel.TabConstraints.tabTitle"), graphPanel); // NOI18N
@@ -575,7 +573,7 @@ public class NetOptimizView extends FrameView {
                                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(RecuitTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 459, Short.MAX_VALUE))
+                            .addComponent(RecuitTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 455, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(mainPanelLayout.createSequentialGroup()
@@ -609,8 +607,8 @@ public class NetOptimizView extends FrameView {
                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(RecuitTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
-                    .addComponent(PLTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE))
+                    .addComponent(RecuitTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE)
+                    .addComponent(PLTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -684,6 +682,8 @@ public class NetOptimizView extends FrameView {
 
     @Action
     public void LoadData() {
+
+        // création d'une boîte de dialogue de sélection de fichier
         JFileChooser jfc1 = new JFileChooser("../Jeu de tests/");
         FileNameExtensionFilter filter = new FileNameExtensionFilter(
                 "Fichiers de Noeuds, d'Arcs ou de Demandes", "nod", "arc", "dem");
@@ -728,8 +728,10 @@ public class NetOptimizView extends FrameView {
             // Si tout s'est bien passé, ils sont lus une 2ème fois pour instancier le graphe
 
             /*il reste à vérifier :
-            - la capacité identique sur tous les arcs
+            - les doublons sur les arcs et les demandes
+            - (la capacité identique sur tous les arcs)
             - le rapport entre le nbre de noeuds déclarés et le nbre d'arcs / de demandes
+            - la faisabilité des demandes ( < capacité )
             - la cohérence du graphe instancié*/
 
             BufferedReader br = null;
@@ -741,6 +743,7 @@ public class NetOptimizView extends FrameView {
                 // à la 1ère lecture du fichier de noeuds
                 boolean declarable_node = false;
                 double test_double_parse;
+                String warning_message = "";
 
                 //
                 // vérification d'intégrité des fichiers de données
@@ -759,8 +762,6 @@ public class NetOptimizView extends FrameView {
                                 "Le chargement des données a été abdandonné.",
                                 "Chargement de données", JOptionPane.ERROR_MESSAGE);
                         return;
-                    } else {
-                        node_names.add(elem[0]);
                     }
                     // vérification du format des champs de type double
                     try {
@@ -776,6 +777,12 @@ public class NetOptimizView extends FrameView {
                                 "Chargement de données", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
+                    // vérification de redondance de déclaration
+                    if (node_names.contains(elem[0])) {
+                        warning_message += "\n* le noeud " + elem[0] + " est déclaré plus d'une fois";
+                    }
+                    // ajout du nom du noeud dans la site des noeuds à déclarer
+                    node_names.add(elem[0]);
                 }
                 br.close();
 
@@ -960,38 +967,58 @@ public class NetOptimizView extends FrameView {
                 Application.getSingleton().getgrapheOriginal().getnoeuds().addAll(Noeud.getnoeuds());
                 Application.getSingleton().getgrapheOriginal().getarcs().addAll(Arc.getarcs());
                 Application.getSingleton().getgrapheOriginal().getdemandes().addAll(Demande.getdemandes());
-                JOptionPane.showMessageDialog(null, "Importation des données réussie !",
-                        "Chargement de données", JOptionPane.INFORMATION_MESSAGE);
+                //JOptionPane.showMessageDialog(null, "Importation des données réussie !",
+                //        "Chargement de données", JOptionPane.INFORMATION_MESSAGE);
                 System.out.println(Application.getSingleton().getgrapheOriginal().toString());
+                if ( !warning_message.equals("") ) {
+                    JOptionPane.showMessageDialog(null, "Le graphe a été correctement instancié, cependant, certaines incohérences ont été \ndétectées dans le jeu de données :" +
+                            warning_message,
+                        "Chargement de données", JOptionPane.WARNING_MESSAGE);
+                }
 
             } catch (IOException x) {
                 System.err.println(x);
             }
         }
+        // si en fin de chargement, aucun noeud n'est instancié, on bloque
+        // le lancement de résolution
+        if ( Application.getSingleton().getgrapheOriginal().getnoeuds().isEmpty() ) {
+            this.jButton4.setEnabled(false);
+        }
+        else this.jButton4.setEnabled(true);
     }
 
     @Action
     public void solve() {
-        this.refresh("principal", " ");
-        String methode_de_resolution = this.buttonGroup1.getSelection().getActionCommand();
-        if (methode_de_resolution.equals("cplex")) {
-            try {
-                double soluce = (new ProgrammeLineaire()).resoudre();
-                this.refresh("solution_cplex", String.valueOf(soluce));
-            } catch (IloException ex) {
-                this.refresh("principal", "Cplex problem : " + ex.getMessage());
+        // exception vérifiée sur la sélection de la méthode de résolution
+        try {
+            String methode_de_resolution = this.buttonGroup1.getSelection().getActionCommand();
+            if (methode_de_resolution.equals("cplex")) {
+                try {
+                    double soluce = (new ProgrammeLineaire()).resoudre();
+                    this.refresh("solution_cplex", String.valueOf(soluce));
+                } catch (IloException ex) {
+                    this.refresh("principal", "Cplex problem : " + ex.getMessage());
+                }
+            } else if (methode_de_resolution.equals("recuit")) {
+                this.refresh("principal", methode_de_resolution + "=> Paliers:" +
+                        this.jSpinner1.getModel().getValue().toString() +
+                        " Itérations:" + this.jSpinner2.getModel().getValue().toString());
+                TelecomRecuit tr = new TelecomRecuit();
+                double soluce = tr.resoudre(Integer.parseInt(this.jSpinner1.getModel().getValue().toString()),
+                        Integer.parseInt(this.jSpinner2.getModel().getValue().toString()));
+                this.refresh("solution_recuit", String.valueOf(soluce));
+            } else if (methode_de_resolution.equals("vns")) {
+                /*TelecomVNS tvns = new TelecomVNS();
+                double soluce = tvns.resoudre(Integer.parseInt(this.jSpinner3.getModel().getValue().toString()),
+                Integer.parseInt(this.jSpinner4.getModel().getValue().toString()));
+                this.refresh("solution_vns", String.valueOf(soluce));*/
             }
-        } else if (methode_de_resolution.equals("recuit")) {
-            this.refresh("principal", methode_de_resolution + "=> Paliers:" + this.jSpinner1.getModel().getValue().toString() + " Itérations:" + this.jSpinner2.getModel().getValue().toString());
-            TelecomRecuit tr = new TelecomRecuit();
-            double soluce = tr.resoudre(Integer.parseInt(this.jSpinner1.getModel().getValue().toString()),
-                    Integer.parseInt(this.jSpinner2.getModel().getValue().toString()));
-            this.refresh("solution_recuit", String.valueOf(soluce));
-        } else if (methode_de_resolution.equals("vns")) {
-            /*TelecomVNS tvns = new TelecomVNS();
-            double soluce = tvns.resoudre(Integer.parseInt(this.jSpinner3.getModel().getValue().toString()),
-            Integer.parseInt(this.jSpinner4.getModel().getValue().toString()));
-            this.refresh("solution_vns", String.valueOf(soluce));*/
+        }catch (Exception e) {
+            // l'exception appropriée est InvocationTargetException,
+            // mais java ne la reconnait pas comme étant envoyée par this.buttonGroup1.getSelection()
+            JOptionPane.showMessageDialog(null, "Choisissez une méthode de résolution",
+                    "Erreur", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -1057,7 +1084,7 @@ public class NetOptimizView extends FrameView {
 
         DefaultModalGraphMouse gm = new DefaultModalGraphMouse();
         gm.setMode(ModalGraphMouse.Mode.TRANSFORMING);
-vv.setGraphMouse(gm);
+        vv.setGraphMouse(gm);
 
         switch (m) {
             case Recuit:
