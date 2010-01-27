@@ -7,14 +7,7 @@ import netoptimiz.graphe.Graphe;
 import netoptimiz.graphe.Noeud;
 import netoptimiz.NetOptimizApp;
 
-import edu.uci.ics.jung.algorithms.layout.CircleLayout;
-import edu.uci.ics.jung.algorithms.layout.Layout;
-import edu.uci.ics.jung.visualization.BasicVisualizationServer;
-import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
-import edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position;
-import java.awt.Dimension;
 import java.util.Date;
-import javax.swing.JFrame;
 import netoptimiz.Methode;
 
 
@@ -38,12 +31,11 @@ public class TelecomRecuit extends ModeleRecuit {
 
     // Permet d'afficher des infos dans l'interface
     public void afficherInfos(String type,String s) {
-        // options d'affichage :
-        // console
-        // principal
-        // température
-        // itérations
-        NetOptimizApp.getApplication().getView().refresh(type,s);
+        if (!type.equals("graphe")) {
+            NetOptimizApp.getApplication().getVuePrincipale().refresh(type, s);
+        } else {
+            NetOptimizApp.getApplication().getVuePrincipale().drawGraph(monGraphe, Methode.Recuit);
+        }
     }
 
     public double resoudre (int nombrePalliers, int iterationsInternes) {
@@ -100,9 +92,9 @@ public class TelecomRecuit extends ModeleRecuit {
         this.afficherInfos("principal","Temps de résolution = " + duree/1000 + " secondes");
         // Affichage de la solution
         cout=calculerCout(monGraphe);
-        this.afficherInfos("principal","Solution = " + cout);
+        this.afficherInfos("principal","Solution = " + cout + "\n  -----------");
         // Affichage du graphique
-        NetOptimizApp.getApplication().getView().drawGraph(monGraphe, Methode.Recuit);
+        this.afficherInfos("graphe", "");
         // Déclenche le garbage collector
         System.gc();
         // On retourne la solution

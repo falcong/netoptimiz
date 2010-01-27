@@ -14,7 +14,7 @@ public class NetOptimizApp extends SingleFrameApplication {
 
     private NetOptimizView vuePrincipale = null;
 
-    public NetOptimizView getView() {
+    public NetOptimizView getVuePrincipale() {
         return vuePrincipale;
     }
 
