@@ -1,13 +1,16 @@
 package netoptimiz.vns;
+
+import edu.uci.ics.jung.graph.UndirectedSparseMultigraph;
 import netoptimiz.Application;
 import netoptimiz.graphe.Arc;
 import netoptimiz.graphe.Graphe;
+import netoptimiz.graphe.Noeud;
 
 public class TelecomVNS extends ModeleVNS {
  protected Graphe monGraphe;
  private double coutInitial;
     private double cout;
-    private double deltacout;
+    //private double deltaCout;
     private Arc monArc;
     boolean suppression;
 
@@ -22,7 +25,7 @@ public class TelecomVNS extends ModeleVNS {
 
 
     public void resoudre () {
-         monGraphe=Application.getSingleton().getgraphe();
+         monGraphe=Application.getSingleton().getgrapheOriginal();
          coutInitial=calculerCout(monGraphe);
          int i=0;
     for(int n=0;n<this.getIterationsInternes();n++)
@@ -32,7 +35,7 @@ public class TelecomVNS extends ModeleVNS {
         //on initialise le booleen de controle a true en début de chaque boucle
              systemFige = true;
         // On initialiser suppression a false par defaut
-             suppression = false
+             suppression = false;
             // On vérifie que la transformation est valide
             // Si ce n'est pas le cas on revient en arrière et on refait un mvt
             while (accepterMVT(monGraphe)==false && i<this.getKmax()) {
@@ -66,8 +69,9 @@ public double calculerCout (Graphe g) {
     }
 */
 
-   public boolean accepterMVT(Graphe monGraphe){
+   public boolean accepterMVT(Graphe g){
     double calculCout;
+    Graphe tempGraphe = g.clone();
 // il faudra ajouter le calcul d'intégrité du réseau
    calculCout=this.calculerCout(monGraphe);
     if( coutInitial >calculCout )
@@ -87,8 +91,11 @@ public double calculerCout (Graphe g) {
             }
 
         // On appelle la fonction de vérification des demandes
-           // 2) vérification que le réseau n'a pas été coupé en 2 sous-réseaux
+          /*
+        // 2) vérification que le réseau n'a pas été coupé en 2 sous-réseaux
         // pour cela on vérifie que les 2 noeuds concernés peuvent se joindre via d'autres arcs
+        //**** Cette vérification a été abandonnée car n'apporte rien en temps de traitement et le test des
+        //      demandes vérifie cet aspect ****
             // On récupère les noeuds extrémité et origine
             Noeud n1=monArc.getNoeudOrigine();
             Noeud n2=monArc.getNoeudExtremite();
@@ -102,17 +109,27 @@ public double calculerCout (Graphe g) {
             List<Arc> chemin = Application.getSingleton().TrouverCheminPlusCourt(gJung, n1, n2);
             // Si la liste de retour est vide, c'est que le réseau est coupé en 2 sous réseaux => non valide
             if (chemin.isEmpty()) return false;
+        */
 
-        // 3) On vérifie que les demandes sont remplies
+         // 3) On vérifie que les demandes sont remplies
+            // On crée un graphe Jung (non orienté)
+            UndirectedSparseMultigraph<Noeud, Arc> gJung = new UndirectedSparseMultigraph<Noeud, Arc>();
+            // On l'alimente pas les arcs de notre graphe
+            for (Arc a : tempGraphe.getarcs()) {
+                // On ne crée que les arcs qui ont une capacité
+                if (a.getCapacite()!=0) gJung.addEdge(a,a.getNoeudOrigine(), a.getNoeudExtremite());
+            }
             // On alimente les noeuds à notre graphe
-            for (Noeud n : Graphe.getSingleton().getnoeuds()) {
+            for (Noeud n : tempGraphe.getnoeuds()) {
               gJung.addVertex(n);
             }
             // On appelle la fonction de vérification des demandes
-            Application.getSingleton().verifierDemandes(gJung);
-        }
-        //*******************//
 
+            if (!Application.getSingleton().verifierDemandes(gJung)) {
+                //System.out.print("***** Refusé *****\n");
+                return false;
+            }
+        }
         // Si tout est vérifié
        coutInitial = calculCout;
        return true;
