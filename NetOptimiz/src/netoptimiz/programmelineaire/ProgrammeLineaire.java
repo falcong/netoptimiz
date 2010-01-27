@@ -6,6 +6,8 @@ import ilog.concert.IloNumVarType;
 import ilog.cplex.IloCplex;
 import java.util.ArrayList;
 import netoptimiz.Application;
+import netoptimiz.Methode;
+import netoptimiz.NetOptimizApp;
 import netoptimiz.graphe.Arc;
 import netoptimiz.graphe.Demande;
 import netoptimiz.graphe.Graphe;
@@ -21,7 +23,7 @@ public class ProgrammeLineaire {
 
   public ProgrammeLineaire() throws IloException {
     modele = new IloCplex();
-    graphe =  Application.getSingleton().getgrapheOriginal().clone();
+    graphe = Application.getSingleton().getgrapheOriginal().clone();
   }
 
   public void addVariable(Variable v) {
@@ -46,7 +48,7 @@ public class ProgrammeLineaire {
     if (graphe.getnoeuds().isEmpty()) {
       System.err.println("Le graphe n'est pas encore intitalisé");
     } else {
-      
+
       createPL(graphe);
 
       for (Variable v : variables) {
@@ -89,12 +91,31 @@ public class ProgrammeLineaire {
 
       //modele.exportModel("c:/lpex1.lp");
       if (modele.solve()) {
+        Graphe tempGraphe = new Graphe();
         for (Variable v : variables) {
-          if (v.getType() == 1)
+
+          if (v.getType() == 1) {
+            if (Math.round(modele.getValue(v.getVar())) == 1) {
+              if (!tempGraphe.getnoeuds().contains(v.getArc().getNoeudExtremite())) {
+                tempGraphe.addNoeud(v.getArc().getNoeudExtremite());
+              }
+              if (!tempGraphe.getnoeuds().contains(v.getArc().getNoeudOrigine())) {
+                tempGraphe.addNoeud(v.getArc().getNoeudOrigine());
+              }
+              if (!tempGraphe.getarcs().contains(v.getArc())) {
+                tempGraphe.addArc(v.getArc());
+                afficherInfos(v.getArc().getNoeudOrigine().getNom() + "-->" + v.getArc().getNoeudExtremite().getNom() + "\n");
+              }
+            }
+
             System.out.println(v.getNomVar() + " = " + modele.getValue(v.getVar()));
+          }
         }
+        NetOptimizApp.getApplication().getView().drawGraph(tempGraphe, Methode.PL);
 
         System.out.println("Objectif = " + modele.getObjValue());
+        afficherInfos("Objectif = " + Double.toString(modele.getObjValue()));
+        
         return modele.getObjValue();
       }
 
@@ -102,7 +123,15 @@ public class ProgrammeLineaire {
     }
     return 0.0;
   }
-  
+
+  public void afficherInfos(String s) {
+        // options d'affichage :
+        // console
+        // principal
+        // température
+        // itérations
+        NetOptimizApp.getApplication().getView().refreshPL(s);
+    }
 
   public void construireGraphe() {
     graphe = new Graphe();
@@ -151,9 +180,8 @@ public class ProgrammeLineaire {
     graphe.addDemande(d5);
     graphe.addDemande(d6);
 
-    //createPL(graphe);
+  //createPL(graphe);
   }
-
 
   public void createPL(Graphe g) {
     int totalNoeuds = g.getnoeuds().size();
@@ -185,7 +213,7 @@ public class ProgrammeLineaire {
         v.setType(0);
         addVariable(v);
         xVars[varIdx++] = v;
-        //System.out.println(v.getNomVar());
+      //System.out.println(v.getNomVar());
       }
     }
 
@@ -194,6 +222,7 @@ public class ProgrammeLineaire {
     for (Arc a : g.getarcs()) {
       Variable v = new Variable();
       v.setNomVar("y_" + (varIdx + 1));
+      v.setArc(a);
       v.setBorneInf(0);
       v.setBorneSup(1);
       v.setType(1);
@@ -288,8 +317,8 @@ public class ProgrammeLineaire {
       //System.out.println(v.getNomVar());
       tt++;
     }
-  System.out.println("Nombre de variables : " + tt);
-  System.out.println("Nombre de contraintes : " + contraintes.size());
+    System.out.println("Nombre de variables : " + tt);
+    System.out.println("Nombre de contraintes : " + contraintes.size());
   }
 
   public ArrayList<Contrainte> getcontraintes() {
