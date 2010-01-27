@@ -257,48 +257,6 @@ public class TelecomRecuit extends ModeleRecuit {
         return deltaCout;
     }
 
-    public void drawGraph (Graphe gJungGraphDraw) {
-        UndirectedSparseMultigraph<Noeud, Arc> gJungGraph = new UndirectedSparseMultigraph<Noeud, Arc>();
-        // On l'alimente pas les arcs de notre graphe
-        for (Arc a : gJungGraphDraw.getarcs()) {
-            // On ne créer que les arcs qui ont une capacité
-            if (a.getCapacite()!=0) gJungGraph.addEdge(a,a.getNoeudOrigine(), a.getNoeudExtremite());
-        }
-        // On alimente les noeuds à notre graphe
-        for (Noeud n : gJungGraphDraw.getnoeuds()) {
-          //gJungGraph.addVertex(n);
-        }
-        // Layout<V, E>, BasicVisualizationServer<V,E>
-        Layout<Integer, String> layout = new CircleLayout(gJungGraph);
-        layout.setSize(new Dimension(300,300));
-        BasicVisualizationServer<Integer,String> vv = new BasicVisualizationServer<Integer,String>(layout);
-        vv.setPreferredSize(new Dimension(500,500));
-        // Setup up a new vertex to paint transformer...
-        /*Transformer<Integer,Paint> vertexPaint = new Transformer<Integer,Paint>() {
-            public Paint transform(Integer i) {
-            return Color.GREEN;
-            }
-        };*/
-        // Set up a new stroke Transformer for the edges
-        /*float dash[] = {10.0f};
-        final Stroke edgeStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT,
-        BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
-        Transformer<String, Stroke> edgeStrokeTransformer = new Transformer<String, Stroke>() {
-        public Stroke transform(String s) {
-        return edgeStroke;
-        }
-        };*/
-        //vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
-        //vv.getRenderContext().setEdgeStrokeTransformer(edgeStrokeTransformer);
-        vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller());
-        vv.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller());
-        vv.getRenderer().getVertexLabelRenderer().setPosition(Position.CNTR);
-        JFrame frame = new JFrame("Graph Recuit");
-        frame.getContentPane().add(vv);
-        frame.pack();
-        frame.setVisible(true);
-    }
-
     // devenu inutile après avoir utilisé un boolen pour accepterMvt()
     public void refuserMvt () {
     }
