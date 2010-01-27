@@ -1,6 +1,7 @@
 package netoptimiz.programmelineaire;
 
 import ilog.concert.IloNumVar;
+import netoptimiz.graphe.Arc;
 
 public class Variable {
 
@@ -11,6 +12,7 @@ public class Variable {
   private double borneInf;
   private double borneSup;
   private IloNumVar var;
+  private Arc arc;
 
   public Variable() {
   }
@@ -67,5 +69,15 @@ public class Variable {
   public void setType(int val) {
     this.type = val;
   }
+
+  void setArc(Arc a) {
+    this.arc = a;
+  }
+
+  public Arc getArc() {
+    return arc;
+  }
+
+  
 }
 
