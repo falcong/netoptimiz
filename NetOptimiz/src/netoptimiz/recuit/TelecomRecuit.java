@@ -13,6 +13,7 @@ import edu.uci.ics.jung.visualization.BasicVisualizationServer;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 import edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position;
 import java.awt.Dimension;
+import java.util.Date;
 import javax.swing.JFrame;
 import netoptimiz.Methode;
 
@@ -46,6 +47,8 @@ public class TelecomRecuit extends ModeleRecuit {
     }
 
     public double resoudre (int nombrePalliers, int iterationsInternes) {
+        // Afin de calculer le temps de résolution
+        Date maDateDebut = new Date();
         // On récupère le premier arc afin d'avoir la capacité initiale
         capaciteInitiale = monGraphe.getarcs().get(0).getCapacite();
         // Initialisation du nombre de paliers de température
@@ -89,12 +92,21 @@ public class TelecomRecuit extends ModeleRecuit {
                 nbArcsSolution++;
             }
         }
+        Date maDateFin = new Date();
+       // System.out.toString(maDateDebutmaDateFin);
         this.afficherInfos("principal","Nombre d'arcs = " + nbArcsSolution);
-        // Dessine le graph
-        //drawGraph(monGraphe);
+        // Calcul du temps de résolution
+        double duree=maDateFin.getTime()-maDateDebut.getTime();
+        this.afficherInfos("principal","Temps de résolution = " + duree/1000 + " secondes");
+        // Affichage de la solution
+        cout=calculerCout(monGraphe);
+        this.afficherInfos("principal","Solution = " + cout);
+        // Affichage du graphique
         NetOptimizApp.getApplication().getView().drawGraph(monGraphe, Methode.Recuit);
-        // On retourne la soultion
-        return calculerCout(monGraphe);
+        // Déclenche le garbage collector
+        System.gc();
+        // On retourne la solution
+        return cout;
     }
 
     // Calcul de la température initiale selon Kirkpatrick
