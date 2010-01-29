@@ -89,9 +89,10 @@ public class ProgrammeLineaire {
         modele.addMinimize(obj);
       }
 
-      //modele.exportModel("c:/lpex1.lp");
+      modele.exportModel("c:/lpex1.lp");
       if (modele.solve()) {
         Graphe tempGraphe = new Graphe();
+        int arcs = 0;
         for (Variable v : variables) {
 
           if (v.getType() == 1) {
@@ -105,15 +106,19 @@ public class ProgrammeLineaire {
               if (!tempGraphe.getarcs().contains(v.getArc())) {
                 tempGraphe.addArc(v.getArc());
                 afficherInfos(v.getArc().getNoeudOrigine().getNom() + "-->" + v.getArc().getNoeudExtremite().getNom() + "\n");
+                arcs++;
               }
             }
 
             System.out.println(v.getNomVar() + " = " + modele.getValue(v.getVar()));
           }
         }
-        NetOptimizApp.getApplication().getView().drawGraph(tempGraphe, Methode.PL);
+        NetOptimizApp.getApplication().getVuePrincipale().drawGraph(tempGraphe, Methode.PL);
+        //NetOptimizApp.getApplication().getVuePrincipale().refresh("console", "test");
+                //drawGraph(tempGraphe, Methode.PL);
 
         System.out.println("Objectif = " + modele.getObjValue());
+        afficherInfos("Nombre d'arcs = " + arcs + "\n");
         afficherInfos("Objectif = " + Double.toString(modele.getObjValue()));
         
         return modele.getObjValue();
@@ -130,7 +135,7 @@ public class ProgrammeLineaire {
         // principal
         // température
         // itérations
-        NetOptimizApp.getApplication().getView().refreshPL(s);
+        NetOptimizApp.getApplication().getVuePrincipale().refreshPL(s);
     }
 
   public void construireGraphe() {
