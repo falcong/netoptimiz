@@ -107,6 +107,10 @@ public class NetOptimizView extends FrameView {
     //this.LoadData();
     }
 
+  public void refreshPL(String s) {
+    jTextArea2.append(s);
+  }
+
     @Action
     public void showAboutBox() {
         if (aboutBox == null) {
@@ -1041,6 +1045,8 @@ public class NetOptimizView extends FrameView {
             this.jTextField10.setText(s);
         }
     }
+
+    
 
     public void drawGraph(Graphe gJungGraphDraw, Methode m) {
         UndirectedSparseMultigraph<Noeud, Arc> gJungGraph = new UndirectedSparseMultigraph<Noeud, Arc>();

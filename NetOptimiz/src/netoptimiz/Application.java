@@ -85,7 +85,7 @@ public class Application {
                         flux=flux-capaciteBasse;
                         // Pour chaque arc on va réduire la capacité en conséquence
                         for (Arc aJung : chemin) {
-                            aJung.setCapacite(aJung.getCapacite() - d.getFlux());
+                            aJung.setCapacite(aJung.getCapacite() - capaciteBasse);
                             // Si la capacité est négative ou égale à 0 alors on supprime l'arc
                             if (aJung.getCapacite()<=0) {
                                 gJung.removeEdge(aJung);
