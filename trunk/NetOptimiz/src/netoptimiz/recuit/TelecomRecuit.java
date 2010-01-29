@@ -23,6 +23,10 @@ public class TelecomRecuit extends ModeleRecuit {
     // Variables nécessaires à déterminer la température initiale
     private double transGenerees=0;
     private double transAcceptees=0;
+    // Variables nécessaires à déterminer la température initiale
+    private double afficheTransGenerees=0;
+    private double afficheTransAcceptees=0;
+
 
     public TelecomRecuit () {
         // On crée une copie du graphe original
@@ -30,6 +34,11 @@ public class TelecomRecuit extends ModeleRecuit {
     }
 
     // Permet d'afficher des infos dans l'interface
+        // options d'affichage :
+        // console
+        // principal
+        // température
+        // itérations
     public void afficherInfos(String type,String s) {
         if (!type.equals("graphe")) {
             NetOptimizApp.getApplication().getVuePrincipale().refresh(type, s);
@@ -49,13 +58,21 @@ public class TelecomRecuit extends ModeleRecuit {
         this.setIterationsInternes(iterationsInternes);
         // Calcule et affecte la température initiale
         tempInitiale(monGraphe);
+		// On remet à zéro car le calcul de la température initiale a modifié ces variables
+        afficheTransGenerees=0;
+        afficheTransAcceptees=0;
+        // Calcul du cout du graphe
+        cout=calculerCout(monGraphe);
         // Affiche des informations dans l'interface
         this.afficherInfos("principal","Température initiale = " + this.getTemperature());
         this.afficherInfos("température",""+(double)Math.round(this.getTemperature()*100)/100);
+        this.afficherInfos("principal","****************************************");
+        int mvtAccepte;
         // On déroule l'algo tant que l'état gelé n'est pas atteint (nombre de paliers atteint)
         for (int nbPalliers = 1; nbPalliers <= this.getNombrePalliers(); nbPalliers++) {
-            // Calcul du cout du graphe
-            cout=calculerCout(monGraphe);
+            // Affichage d'informations
+            this.afficherInfos("principal","Palier "+nbPalliers);
+            this.afficherInfos("principal","Température au départ du palier = "+(double)Math.round(this.getTemperature()*100)/100);
             // boucle pour les itérations par température
             for (int nbIterationsEnCours = 1; nbIterationsEnCours <= this.getIterationsInternes(); nbIterationsEnCours++) {
                 this.afficherInfos("itérations",String.valueOf(nbIterationsEnCours));
@@ -65,14 +82,30 @@ public class TelecomRecuit extends ModeleRecuit {
                 if (accepterMVT(monGraphe)==false) {
                     if (monArc.getCapacite()==0) monArc.setCapacite(capaciteInitiale);
                     else monArc.setCapacite(0);
+                    mvtAccepte=0;
+                }
+                else {
+                    cout=calculerCout(monGraphe);
+                    mvtAccepte=1;
+                }
+                if (nbIterationsEnCours<=10 || nbIterationsEnCours>=this.getIterationsInternes()-10) {
+                    this.afficherInfos("principal","   |Itération "+nbIterationsEnCours);
+                    this.afficherInfos("principal","   |Fonction objectif = "+cout);
+                    this.afficherInfos("principal","   |Statut mouvement = "+mvtAccepte);
+                    this.afficherInfos("principal","   ---------------------------------");
                 }
             }
             // Les itérations ont été faites => On baisse la température
             this.setTemperature(this.getTemperature() * this.getDecroissanceTemp());
             // On affiche la température courante sur l'interface (2 chiffres après la virgule)
             this.afficherInfos("température",""+(double)Math.round(this.getTemperature()*100)/100);
-            // On décrémente le palier
-            this.setNombrePalliers(nombrePalliers - 1);
+            //this.afficherInfos("principal","Transformations couteuses générées = "+afficheTransGenerees);
+            //this.afficherInfos("principal","Transformations couteuses acceptées = "+afficheTransAcceptees);
+            this.afficherInfos("principal","Transformations couteuses acceptées = "+(double)Math.round((afficheTransAcceptees/afficheTransGenerees*100)*100)/100+" %");
+            this.afficherInfos("principal","Fonction objectif = "+cout);
+            this.afficherInfos("principal","********************");
+            afficheTransGenerees=0;
+            afficheTransAcceptees=0;
         } // Fin du recuit
         // Afin de connaître le nombre d'arcs ayant une capacité pour la solution
         int nbArcsSolution=0;
@@ -84,15 +117,17 @@ public class TelecomRecuit extends ModeleRecuit {
                 nbArcsSolution++;
             }
         }
-        Date maDateFin = new Date();
-       // System.out.toString(maDateDebutmaDateFin);
-        this.afficherInfos("principal","Nombre d'arcs = " + nbArcsSolution);
         // Calcul du temps de résolution
+        Date maDateFin = new Date();
         double duree=maDateFin.getTime()-maDateDebut.getTime();
+		cout=calculerCout(monGraphe);
+		// Affichage des résultats
+        this.afficherInfos("principal","****************************************");
+        this.afficherInfos("principal","Total transformations couteuses générées = "+transGenerees);
+        this.afficherInfos("principal","Total transformations couteuses acceptées = "+transAcceptees);
+        this.afficherInfos("principal","Nombre d'arcs = " + nbArcsSolution);
         this.afficherInfos("principal","Temps de résolution = " + duree/1000 + " secondes");
-        // Affichage de la solution
-        cout=calculerCout(monGraphe);
-        this.afficherInfos("principal","Solution = " + cout + "\n  -----------");
+        this.afficherInfos("principal","Solution = " + cout);
         // Affichage du graphique
         this.afficherInfos("graphe", "");
         // Déclenche le garbage collector
@@ -117,13 +152,26 @@ public class TelecomRecuit extends ModeleRecuit {
         // boucle pour déterminer la température initiale
         do {
             // On défini le nombre de transformations couteuses à évaluer
-            //  On a déterminé que ce nombre serait égal au nombre d'arcs du graphe original
-            double nbTransCouteuses=tempGrapheTinit.getarcs().size();
-            do {
-                faireMvt(tempGrapheTinit);
-                accepterMVT(tempGrapheTinit);
-            }
-            while (transGenerees<nbTransCouteuses); // On a déterminé que l'on s'arrétait à ce nombre de transformations couteuses
+            //  On a déterminé que ce nombre serait égal au nombre d'arcs du graphe original multiplié par 10
+            double nbTransCouteuses=10*tempGrapheTinit.getarcs().size();
+            int nbPalliers = 1;
+            while((transGenerees<nbTransCouteuses) && (nbPalliers <= this.getNombrePalliers())) {
+                // boucle pour les itérations par température qui s'arrête soit pas la fin du recuit soit par le nombre de
+                //  transformation couteuses définies atteintes
+                for (int nbIterationsEnCours = 1; nbIterationsEnCours <= this.getIterationsInternes(); nbIterationsEnCours++) {
+                    this.afficherInfos("itérations",String.valueOf(nbIterationsEnCours));
+                    // On fait un mouvement
+                    faireMvt(tempGrapheTinit);
+                    // Si le mouvement n'est pas accepté on fait le mouvement inverse pour se remettre à l'état précédent
+                    if (accepterMVT(tempGrapheTinit)==false) {
+                        if (monArc.getCapacite()==0) monArc.setCapacite(capaciteInitiale);
+                        else monArc.setCapacite(0);
+                    }
+                    else cout=calculerCout(tempGrapheTinit);
+                }
+                nbPalliers++;
+            } // On a atteint le nombre de tranformations couteuses définies ou bien c'est la fin du recuit
+
             tauxAcceptation = transAcceptees/transGenerees;
             // Dans le cas où le while serait vérifié on double la température et on recommence
             this.setTemperature(getTemperature()*2);
@@ -162,8 +210,12 @@ public class TelecomRecuit extends ModeleRecuit {
             double exp=Math.exp(-deltaCout/getTemperature());
             double p = Math.random();
             transGenerees++;
+            afficheTransGenerees++;
             if (p>exp) return false;
-            else transAcceptees++;
+            else {
+                transAcceptees++;
+                afficheTransAcceptees++;
+            }
         }
 
         //*** En cas d'ajout de capacité il est inutile de faire les tests suivants ***//
