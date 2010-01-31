@@ -122,13 +122,15 @@ public class TelecomRecuit extends ModeleRecuit {
         // On affiche la liste des arcs ayant une capacité
         if (NetOptimizApp.getApplication().getVuePrincipale().advancedLog()) {
             this.afficherInfos("log_recuit", "Liste des arcs:");
+        }
             for (Arc a : monGraphe.getarcs()) {
                 if (a.getCapacite() > 0) {
-                    this.afficherInfos("log_recuit", a.getNoeudOrigine().getNom() + "-" + a.getNoeudExtremite().getNom() + " Cout:" + a.getCout());
+                    if (NetOptimizApp.getApplication().getVuePrincipale().advancedLog()) {
+                        this.afficherInfos("log_recuit", a.getNoeudOrigine().getNom() + "-" + a.getNoeudExtremite().getNom() + " Cout:" + a.getCout());
+                    }
                     nbArcsSolution++;
                 }
             }
-        }
         // Calcul du temps de résolution
         Date maDateFin = new Date();
         double duree=maDateFin.getTime()-maDateDebut.getTime();
@@ -141,7 +143,7 @@ public class TelecomRecuit extends ModeleRecuit {
         }
         this.afficherInfos("log_recuit","Nombre d'arcs = " + nbArcsSolution);
         this.afficherInfos("log_recuit","Temps de résolution = " + duree/1000 + " secondes");
-        this.afficherInfos("log_recuit","Solution = " + cout);
+        this.afficherInfos("log_recuit","Solution = " + cout+"\n\n");
         // Affichage du graphique
         this.afficherInfos("graphe", "");
         // Déclenche le garbage collector
@@ -166,8 +168,8 @@ public class TelecomRecuit extends ModeleRecuit {
         // boucle pour déterminer la température initiale
         do {
             // On défini le nombre de transformations couteuses à évaluer
-            //  On a déterminé que ce nombre serait égal au nombre d'arcs du graphe original multiplié par 10
-            double nbTransCouteuses=10*tempGrapheTinit.getarcs().size();
+            //  On a déterminé que ce nombre serait égal au nombre de paliers*itérations divisé par 3
+            double nbTransCouteuses=(getNombrePalliers()*getIterationsInternes())/3;
             int nbPalliers = 1;
             while((transGenerees<nbTransCouteuses) && (nbPalliers <= this.getNombrePalliers())) {
                 // boucle pour les itérations par température qui s'arrête soit pas la fin du recuit soit par le nombre de
