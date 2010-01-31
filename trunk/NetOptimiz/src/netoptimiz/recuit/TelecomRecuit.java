@@ -58,6 +58,8 @@ public class TelecomRecuit extends ModeleRecuit {
         this.setIterationsInternes(iterationsInternes);
         // Calcule et affecte la température initiale
         tempInitiale(monGraphe);
+        // A utiliser si on veut fixer la température initiale (il faut aussi commenter la ligne précédente)
+        //this.setTemperature(7148);
 		// On remet à zéro car le calcul de la température initiale a modifié ces variables
         afficheTransGenerees=0;
         afficheTransAcceptees=0;
