@@ -36,7 +36,7 @@ public class TelecomRecuit extends ModeleRecuit {
     // Permet d'afficher des infos dans l'interface
         // options d'affichage :
         // console
-        // principal
+        // log_recuit
         // température
         // itérations
     public void afficherInfos(String type,String s) {
@@ -64,18 +64,24 @@ public class TelecomRecuit extends ModeleRecuit {
         // Calcul du cout du graphe
         cout=calculerCout(monGraphe);
         // Affiche des informations dans l'interface
-        this.afficherInfos("principal","Température initiale = " + this.getTemperature());
+        this.afficherInfos("log_recuit","Température initiale = " + this.getTemperature());
         this.afficherInfos("température",""+(double)Math.round(this.getTemperature()*100)/100);
-        this.afficherInfos("principal","****************************************");
+        if (NetOptimizApp.getApplication().getVuePrincipale().advancedLog()) {
+            this.afficherInfos("log_recuit", "****************************************");
+        }
         int mvtAccepte;
         // On déroule l'algo tant que l'état gelé n'est pas atteint (nombre de paliers atteint)
         for (int nbPalliers = 1; nbPalliers <= this.getNombrePalliers(); nbPalliers++) {
             // Affichage d'informations
-            this.afficherInfos("principal","Palier "+nbPalliers);
-            this.afficherInfos("principal","Température au départ du palier = "+(double)Math.round(this.getTemperature()*100)/100);
+            if (NetOptimizApp.getApplication().getVuePrincipale().advancedLog()) {
+                this.afficherInfos("log_recuit", "Palier " + nbPalliers);
+                this.afficherInfos("log_recuit", "Température au départ du palier = " + (double) Math.round(this.getTemperature() * 100) / 100);
+            }
             // boucle pour les itérations par température
             for (int nbIterationsEnCours = 1; nbIterationsEnCours <= this.getIterationsInternes(); nbIterationsEnCours++) {
-                this.afficherInfos("itérations",String.valueOf(nbIterationsEnCours));
+                if (NetOptimizApp.getApplication().getVuePrincipale().advancedLog()) {
+                    this.afficherInfos("itérations", String.valueOf(nbIterationsEnCours));
+                }
                 // On fait un mouvement
                 faireMvt(monGraphe);
                 // Si le mouvement n'est pas accepté on fait le mouvement inverse pour se remettre à l'état précédent
@@ -88,33 +94,39 @@ public class TelecomRecuit extends ModeleRecuit {
                     cout=calculerCout(monGraphe);
                     mvtAccepte=1;
                 }
-                if (nbIterationsEnCours<=10 || nbIterationsEnCours>=this.getIterationsInternes()-10) {
-                    this.afficherInfos("principal","   |Itération "+nbIterationsEnCours);
-                    this.afficherInfos("principal","   |Fonction objectif = "+cout);
-                    this.afficherInfos("principal","   |Statut mouvement = "+mvtAccepte);
-                    this.afficherInfos("principal","   ---------------------------------");
+                if (NetOptimizApp.getApplication().getVuePrincipale().advancedLog()) {
+                    if (nbIterationsEnCours <= 10 || nbIterationsEnCours >= this.getIterationsInternes() - 10) {
+                        this.afficherInfos("log_recuit", "   |Itération " + nbIterationsEnCours);
+                        this.afficherInfos("log_recuit", "   |Fonction objectif = " + cout);
+                        this.afficherInfos("log_recuit", "   |Statut mouvement = " + mvtAccepte);
+                        this.afficherInfos("log_recuit", "   ---------------------------------");
+                    }
                 }
             }
             // Les itérations ont été faites => On baisse la température
             this.setTemperature(this.getTemperature() * this.getDecroissanceTemp());
             // On affiche la température courante sur l'interface (2 chiffres après la virgule)
             this.afficherInfos("température",""+(double)Math.round(this.getTemperature()*100)/100);
-            //this.afficherInfos("principal","Transformations couteuses générées = "+afficheTransGenerees);
-            //this.afficherInfos("principal","Transformations couteuses acceptées = "+afficheTransAcceptees);
-            this.afficherInfos("principal","Transformations couteuses acceptées = "+(double)Math.round((afficheTransAcceptees/afficheTransGenerees*100)*100)/100+" %");
-            this.afficherInfos("principal","Fonction objectif = "+cout);
-            this.afficherInfos("principal","********************");
+            //this.afficherInfos("log_recuit","Transformations couteuses générées = "+afficheTransGenerees);
+            //this.afficherInfos("log_recuit","Transformations couteuses acceptées = "+afficheTransAcceptees);
+            if (NetOptimizApp.getApplication().getVuePrincipale().advancedLog()) {
+                this.afficherInfos("log_recuit", "Transformations couteuses acceptées = " + (double) Math.round((afficheTransAcceptees / afficheTransGenerees * 100) * 100) / 100 + " %");
+                this.afficherInfos("log_recuit", "Fonction objectif = " + cout);
+                this.afficherInfos("log_recuit", "********************");
+            }
             afficheTransGenerees=0;
             afficheTransAcceptees=0;
         } // Fin du recuit
         // Afin de connaître le nombre d'arcs ayant une capacité pour la solution
         int nbArcsSolution=0;
         // On affiche la liste des arcs ayant une capacité
-        this.afficherInfos("principal","Liste des arcs:");
-        for (Arc a : monGraphe.getarcs()) {
-            if (a.getCapacite()>0) {
-                this.afficherInfos("principal",a.getNoeudOrigine().getNom()+"-"+a.getNoeudExtremite().getNom()+" Cout:"+a.getCout());
-                nbArcsSolution++;
+        if (NetOptimizApp.getApplication().getVuePrincipale().advancedLog()) {
+            this.afficherInfos("log_recuit", "Liste des arcs:");
+            for (Arc a : monGraphe.getarcs()) {
+                if (a.getCapacite() > 0) {
+                    this.afficherInfos("log_recuit", a.getNoeudOrigine().getNom() + "-" + a.getNoeudExtremite().getNom() + " Cout:" + a.getCout());
+                    nbArcsSolution++;
+                }
             }
         }
         // Calcul du temps de résolution
@@ -122,12 +134,14 @@ public class TelecomRecuit extends ModeleRecuit {
         double duree=maDateFin.getTime()-maDateDebut.getTime();
 		cout=calculerCout(monGraphe);
 		// Affichage des résultats
-        this.afficherInfos("principal","****************************************");
-        this.afficherInfos("principal","Total transformations couteuses générées = "+transGenerees);
-        this.afficherInfos("principal","Total transformations couteuses acceptées = "+transAcceptees);
-        this.afficherInfos("principal","Nombre d'arcs = " + nbArcsSolution);
-        this.afficherInfos("principal","Temps de résolution = " + duree/1000 + " secondes");
-        this.afficherInfos("principal","Solution = " + cout);
+        if (NetOptimizApp.getApplication().getVuePrincipale().advancedLog()) {
+            this.afficherInfos("log_recuit", "****************************************");
+            this.afficherInfos("log_recuit", "Total transformations couteuses générées = " + transGenerees);
+            this.afficherInfos("log_recuit", "Total transformations couteuses acceptées = " + transAcceptees);
+        }
+        this.afficherInfos("log_recuit","Nombre d'arcs = " + nbArcsSolution);
+        this.afficherInfos("log_recuit","Temps de résolution = " + duree/1000 + " secondes");
+        this.afficherInfos("log_recuit","Solution = " + cout);
         // Affichage du graphique
         this.afficherInfos("graphe", "");
         // Déclenche le garbage collector
