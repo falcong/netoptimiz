@@ -36,30 +36,12 @@ public abstract class ModeleVNS {
         this.kmax = val;
     }
 
-    public abstract void resoudre ();
-     /*   double coutMvt;
-        bestVns.faireMvt();
-        for(int i=0;i<kmax;i++)
-        {
-        this.valideMvt();
-        this.calculerCout();
-        if(coutMvt=this.deltaCout()< 0)
-        { 
-            bestVns = this;
-        this.faireMvt();}
-        else{
-         this.retourMvt();
-         this.faireMvt();
-        }
-        }
-
-    }*/
+    public abstract double resoudre (int K,int I);
     public abstract boolean accepterMVT (Graphe g);
     public abstract void faireMvt (Graphe g);
-    //public abstract void retourMvt(Graphe g);
+    public abstract void faireMvtRt(Graphe g);
     //public abstract void valideMvt (Graphe g);
     public abstract double calculerCout (Graphe g);
     //public abstract double deltaCout ();
 
 }
-
