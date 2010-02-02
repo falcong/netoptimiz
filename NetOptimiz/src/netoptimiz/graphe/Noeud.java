@@ -1,6 +1,5 @@
 package netoptimiz.graphe;
 
-import com.sun.xml.internal.bind.v2.runtime.RuntimeUtil.ToStringAdapter;
 import java.util.ArrayList;
 
 public class Noeud {
