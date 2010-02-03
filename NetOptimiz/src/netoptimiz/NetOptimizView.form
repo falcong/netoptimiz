@@ -310,6 +310,7 @@
                 <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                   <ComponentRef name="buttonGroup1"/>
                 </Property>
+                <Property name="selected" type="boolean" value="true"/>
                 <Property name="text" type="java.lang.String" resourceKey="jRadioButton1.text"/>
                 <Property name="actionCommand" type="java.lang.String" resourceKey="jRadioButton1.actionCommand"/>
                 <Property name="name" type="java.lang.String" value="jRadioButton1" noResource="true"/>

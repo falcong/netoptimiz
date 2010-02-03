@@ -37,6 +37,7 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import netoptimiz.programmelineaire.ProgrammeLineaire;
 import netoptimiz.recuit.TelecomRecuit;
+import netoptimiz.vns.TelecomVNS;
 
 /**
  * The application's main frame.
@@ -281,6 +282,7 @@ public class NetOptimizView extends FrameView {
         jPanel2.setName("jPanel2"); // NOI18N
 
         buttonGroup1.add(jRadioButton1);
+        jRadioButton1.setSelected(true);
         jRadioButton1.setText(resourceMap.getString("jRadioButton1.text")); // NOI18N
         jRadioButton1.setActionCommand(resourceMap.getString("jRadioButton1.actionCommand")); // NOI18N
         jRadioButton1.setName("jRadioButton1"); // NOI18N
@@ -1001,7 +1003,7 @@ public class NetOptimizView extends FrameView {
     @Action
     public void solve() {
         // exception vérifiée sur la sélection de la méthode de résolution
-        try {
+        //try {
             String methode_de_resolution = this.buttonGroup1.getSelection().getActionCommand();
             if (methode_de_resolution.equals("cplex")) {
                 try {
@@ -1019,17 +1021,20 @@ public class NetOptimizView extends FrameView {
                         Integer.parseInt(this.jSpinner2.getModel().getValue().toString()));
                 this.refresh("solution_recuit", String.valueOf(soluce));
             } else if (methode_de_resolution.equals("vns")) {
-                /*TelecomVNS tvns = new TelecomVNS();
+                 this.refresh("log_recuit", methode_de_resolution + "=> Kmax:" +
+                        this.jSpinner3.getModel().getValue().toString() +
+                        " Itérations:" + this.jSpinner4.getModel().getValue().toString());
+                TelecomVNS tvns = new TelecomVNS();
                 double soluce = tvns.resoudre(Integer.parseInt(this.jSpinner3.getModel().getValue().toString()),
                 Integer.parseInt(this.jSpinner4.getModel().getValue().toString()));
-                this.refresh("solution_vns", String.valueOf(soluce));*/
+                this.refresh("solution_vns", String.valueOf(soluce));
             }
-        }catch (Exception e) {
-            // l'exception appropriée est InvocationTargetException,
-            // mais java ne la reconnait pas comme étant envoyée par this.buttonGroup1.getSelection()
-            JOptionPane.showMessageDialog(null, "Choisissez une méthode de résolution",
-                    "Erreur", JOptionPane.ERROR_MESSAGE);
-        }
+        /*}catch (Exception e) {
+        // l'exception appropriée est InvocationTargetException,
+        // mais java ne la reconnait pas comme étant envoyée par this.buttonGroup1.getSelection()
+        JOptionPane.showMessageDialog(null, "Choisissez une méthode de résolution",
+        "Erreur", JOptionPane.ERROR_MESSAGE);
+        }*/
     }
 
     public boolean advancedLog () {
