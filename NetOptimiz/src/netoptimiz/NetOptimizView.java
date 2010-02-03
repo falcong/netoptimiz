@@ -1024,10 +1024,14 @@ public class NetOptimizView extends FrameView {
                  this.refresh("log_recuit", methode_de_resolution + "=> Kmax:" +
                         this.jSpinner3.getModel().getValue().toString() +
                         " Itérations:" + this.jSpinner4.getModel().getValue().toString());
+                 try {
                 TelecomVNS tvns = new TelecomVNS();
                 double soluce = tvns.resoudre(Integer.parseInt(this.jSpinner3.getModel().getValue().toString()),
                 Integer.parseInt(this.jSpinner4.getModel().getValue().toString()));
                 this.refresh("solution_vns", String.valueOf(soluce));
+                 } catch (Exception e) {
+                     System.out.println("ERREUR VNS " + e.getMessage());
+                 }
             }
         /*}catch (Exception e) {
         // l'exception appropriée est InvocationTargetException,
